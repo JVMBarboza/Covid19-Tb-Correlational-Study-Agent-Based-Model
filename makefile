@@ -3,8 +3,8 @@ TARGETBETA=betaCalc
 CC=g++
 LD=g++
 CCFLAGS=
-OBJS=main.o person.o
-OBJSBETA=generateBeta.o person.o
+OBJS=main.o person.o personTb.o
+OBJSBETA=generateBeta.o person.o personTb.o
 
 
 exec:$(OBJS)
@@ -20,6 +20,9 @@ main.o: src/main.cpp
  
 person.o: src/person.cpp
 	$(CC) src/person.cpp -o person.o -c $(CCFLAGS)
+
+personTb.o: src/personTb.cpp
+	$(CC) src/personTb.cpp -o personTb.o -c $(CCFLAGS)
 
 generateBeta.o: src/generateBeta.cpp
 	$(CC) src/generateBeta.cpp -o generateBeta.o -c $(CCFLAGS)

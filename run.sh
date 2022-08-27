@@ -97,7 +97,7 @@ do
     if [ "$printLatticeOnFileAtEnd" = "TRUE" ]; then sed -i -e "s/\(#define PRINTLATTICEONFILEATEND \).*/\1"TRUE"/" lib/define.h; fi
 
     echo "#######################################################"
-    echo "############  SIMULATION $i START   ###################" 
+    echo "###########  SIMULATION $i STARTED   ##################" 
     echo "#######################################################"
     
     make

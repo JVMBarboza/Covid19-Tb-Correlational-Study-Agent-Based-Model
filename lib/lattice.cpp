@@ -14,6 +14,14 @@ void copyData(int xone, int yone, int xtwo, int ytwo){
     person[xone][yone]->setTreatmTotalDays( person[xtwo][ytwo]->getTreatmTotalDays() );
     person[xone][yone]->setDaysOnTreatm( person[xtwo][ytwo]->getDaysOnTreatm() );
     person[xone][yone]->setIsolation( person[xtwo][ytwo]->getIsolation() );
+    
+    personTb[xone][yone]->setAgeOfDeath( personTb[xtwo][ytwo]->getAgeOfDeath() );
+    personTb[xone][yone]->setState( personTb[xtwo][ytwo]->getState() ); 
+    personTb[xone][yone]->setSwap( personTb[xtwo][ytwo]->getSwap() );     
+    personTb[xone][yone]->setStateTotalDays( personTb[xtwo][ytwo]->getStateTotalDays() ); 
+    personTb[xone][yone]->setDaysOnState( personTb[xtwo][ytwo]->getDaysOnState() );       
+    personTb[xone][yone]->setTreatmTotalDays( personTb[xtwo][ytwo]->getTreatmTotalDays() );
+    personTb[xone][yone]->setDaysOnTreatm( personTb[xtwo][ytwo]->getDaysOnTreatm() );
 
 }
 
@@ -51,6 +59,7 @@ void updateLattice(){
         for(int j = 1; j <= L; j++){
 
             person[i][j]->update();
+            personTb[i][j]->update();
                        
         }
     }
@@ -61,13 +70,13 @@ void updateLattice(){
 
 void beginLattice(int tmpAvailableBeds, int tmpAvailableBedsICU){
     
-
     cout << "beginning lattice..."; //START ENTIRE LATTICE WITH ZEROS
 
     for(int i = 0; i <= L+1; i++){
         for(int j = 0; j <= L+1; j++){
 
-            person[i][j] = new Person( i, j, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            person[i][j]   = new Person( i, j, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            personTb[i][j] = new PersonTb( i, j, 0, 0, 0, 0, 0, 0, 0);
 
         }
     }
@@ -92,6 +101,14 @@ void beginLattice(int tmpAvailableBeds, int tmpAvailableBedsICU){
             person[i][j]->setTreatmTotalDays( -1 );
             person[i][j]->setDaysOnTreatm( -1 );
             person[i][j]->setIsolation( sortPopPorcentageInIsolation() );
+
+            personTb[i][j]->setAgeOfDeath( sortPersonAgeOfDeath() );
+            personTb[i][j]->setState( STB );
+            personTb[i][j]->setSwap( STB );
+            personTb[i][j]->setStateTotalDays( -1 );
+            personTb[i][j]->setDaysOnState( 0 );
+            personTb[i][j]->setTreatmTotalDays( -1 );
+            personTb[i][j]->setDaysOnTreatm( -1 );
 
         }
     }

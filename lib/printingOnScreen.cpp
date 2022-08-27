@@ -30,6 +30,22 @@ void printOnScreen(int time){
    
 }
 
+void printTbOnScreen(int time){
+
+    if(PRINTONSCREEN==TRUE){
+        if(time==0)
+            cout << "\n#################################### Simulation Dynamics Began #####################################################################################\n" << endl;
+
+
+        cout << "Time:" << time 
+            << " S:" << PersonTb::total_S 
+            << " LS:" << PersonTb::total_LS
+            << " TS:" << PersonTb::total_TS << endl;
+    }
+    
+   
+}
+
 void printSettings(){
 
     if(PRINTONSCREEN==TRUE){

@@ -19,12 +19,14 @@ double numberOfICUBeds;
 
 #include "../lib/person.h"
 #include "../lib/personTb.h"
-Person *person[L+2][L+2];
+
+Person   *person[L+2][L+2];
+PersonTb *personTb[L+2][L+2];
 
 #include "../lib/calcAgeDistribution.cpp"
 #include "../lib/calcNaturalDeathDistribution.cpp"
-#include "../lib/studyInfectionInNeighborhood.cpp"
 #include "../lib/calcRecoveryProbabilities.cpp"
+#include "../lib/studyInfectionInNeighborhood.cpp"
 #include "../lib/sortPersonsAtributesFromDistributions.cpp"
 #include "../lib/lattice.cpp"
 #include "../lib/printingOnScreen.cpp"
@@ -48,6 +50,10 @@ int Person::dailyDeathsByCovid = 0;
 
 int Person::availableBeds = 0;
 int Person::availableBedsICU = 0;
+
+int PersonTb::total_S  = 0;
+int PersonTb::total_LS = 0;
+int PersonTb::total_TS = 0;
 
 
 
@@ -97,7 +103,7 @@ int main(int argc, char *argv[]){
     beginAgeDistribution();
     beginNaturalDeathDistribution();
     beginLattice( numberOfHospitalBeds*(1 - AverageOcupationRateBeds) , numberOfICUBeds*(1 - AverageOcupationRateBedsICU) );
-    //beginLatticeInfection();
+    beginLatticeInfection();
     updateLattice();
 
     printSettings();
@@ -309,7 +315,10 @@ int main(int argc, char *argv[]){
         updateLattice();
 
         if( PRINTONSCREEN==TRUE )
-            printOnScreen(time);
+            //printOnScreen(time);
+
+        if( PRINTONSCREENTB==TRUE )
+            printTbOnScreen(time);
 
         if( of.is_open() )
             printCountOnFile(FALSE); 

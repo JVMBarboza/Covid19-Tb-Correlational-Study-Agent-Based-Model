@@ -104,6 +104,7 @@ int main(int argc, char *argv[]){
     beginNaturalDeathDistribution();
     beginLattice( numberOfHospitalBeds*(1 - AverageOcupationRateBeds) , numberOfICUBeds*(1 - AverageOcupationRateBedsICU) );
     beginLatticeInfection();
+    beginLatticeInfectionTb();
     updateLattice();
 
     printSettings();
@@ -315,7 +316,7 @@ int main(int argc, char *argv[]){
         updateLattice();
 
         if( PRINTONSCREEN==TRUE )
-            //printOnScreen(time);
+            printOnScreen(time);
 
         if( PRINTONSCREENTB==TRUE )
             printTbOnScreen(time);

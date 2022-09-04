@@ -6,7 +6,7 @@ double AgeMax[21];
 
 void beginAgeDistribution(){ // for Brazil
 	
-  if(PRINTONSCREEN==TRUE){ cout << "\nbeginning age distribution..."; }
+  if(PRINTONSCREEN==TRUE){ cout << "\ncalculating age distribution..."; }
 
   ProbBirthAge[1]  	=	0.06960000; // 0–4 years
   ProbBirthAge[2]  	=	0.06920000; // 5–9 years

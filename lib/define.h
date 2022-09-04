@@ -83,7 +83,7 @@
 #define TimeTiggerIsolation  15 // days
 
 #define AverageOcupationRateBeds 0.5     // average ocupation rate of hospital beds due to others diseases
-#define AverageOcupationRateBedsICU 0.5      // average ocupation rate of hospital beds due to others diseases
+#define AverageOcupationRateBedsICU 0.5  // average ocupation rate of hospital beds due to others diseases
 
 /* Population parameters  - Initializion values */
 #define  Eini          0
@@ -96,6 +96,8 @@
 #define  ICUini        0
 #define  Recoveredini  0
 
+#define LSini (L*L)/4    // 1/4 of the total population
+#define TSini 5*10        // Initial number of infectious indivividuals in TS state  
 
 /*********** COVID DISEASE CONSTANT PARAMETERS **************/
 /* Probs of evolution between states */
@@ -105,7 +107,7 @@
 #define ProbToBecomeISModerate 0.2
 #define ProbToBecomeISSevere 0.2
 
-#define ProbISLightToISModerate 0.10  /// NEW CHECK CHECK
+#define ProbISLightToISModerate 0.10  // NEW CHECK CHECK
 
 #define ProbHtoICU 0.25
 

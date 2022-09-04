@@ -91,6 +91,7 @@ void beginLattice(int tmpAvailableBeds, int tmpAvailableBedsICU){
     for(int i = 1; i <= L; i++){
         for(int j = 1; j <= L; j++){
             
+            //main class atributes
             person[i][j]->setAge( sortPersonAge() );
             person[i][j]->setAgeOfDeath( sortPersonAgeOfDeath() );
             person[i][j]->setGender( sortPersonGender() );
@@ -102,6 +103,7 @@ void beginLattice(int tmpAvailableBeds, int tmpAvailableBedsICU){
             person[i][j]->setDaysOnTreatm( -1 );
             person[i][j]->setIsolation( sortPopPorcentageInIsolation() );
 
+            //tb class atributes
             personTb[i][j]->setAgeOfDeath( sortPersonAgeOfDeath() );
             personTb[i][j]->setState( STB );
             personTb[i][j]->setSwap( STB );
@@ -129,7 +131,8 @@ void beginLatticeInfection(){
 
     double rn, tmp=0.0;
 
-    int key=0;
+    int key_covid=0;
+
     double totalPop = L*L; //the "#define N = L*L" returns an int value which drops our accuracy      
 
     cout << "beginning lattice infection...";
@@ -139,82 +142,82 @@ void beginLatticeInfection(){
 
             if( Eini != 0 ){
 
-                tmp  = Eini/totalPop;
-                rn = sortRandomNumber(&R);
+                tmp = Eini/totalPop;
+                rn  = sortRandomNumber(&R);
                 
                 if( rn < tmp ){
                     person[i][j]->changeState(E, sortTotalDaysOnState(minLatency, maxLatency) ); // changePersonState(i,j,S,E);
-                    key=1;
+                    key_covid=1;
                 }
             }
             
-            if( (key==0) && (IPini != 0) ){ //if key == 0 -> person[i][j] still in S state
+            if( (key_covid==0) && (IPini!=0) ){ //if key_covid == 0 -> person[i][j] still in S state
                 
                 tmp = IPini/totalPop;    
                 rn = sortRandomNumber(&R);
                 
                 if( rn<tmp ){
                     person[i][j]->changeState(IP, sortTotalDaysOnState(minIP, maxIP) ); //changePersonState(i,j,S,IP);
-                    key=1;
+                    key_covid=1;
                 }
             }
 
-            if( (key==0) && (IAini != 0) ){ //if key == 0 -> person[i][j] still in S state
+            if( (key_covid==0) && (IAini != 0) ){ //if key_covid == 0 -> person[i][j] still in S state
                 
                 tmp = IAini/totalPop;       
                 rn = sortRandomNumber(&R);
                 
                 if( rn<tmp ){
                     person[i][j]->changeState( IA, sortTotalDaysOnState(minIA, maxIA) ); //changePersonState(i,j,S,IA);
-                    key=1;
+                    key_covid=1;
                 }
             }
 
-            if( (key==0) && (ISLightini != 0) ){ //if key == 0 -> person[i][j] still in S state
+            if( (key_covid==0) && (ISLightini != 0) ){ //if key_covid == 0 -> person[i][j] still in S state
                 
                 tmp = ISLightini/totalPop;  
                 rn = sortRandomNumber(&R);
                 
                 if( rn<tmp ){
                     person[i][j]->changeState( ISLight, sortTotalDaysOnState(minISLight, maxISLight) ); //changePersonState(i,j,S,ISLight);
-                    key=1;
+                    key_covid=1;
                 }
             }
 
-            if( (key==0) && (ISModerateini != 0) ){ //if key == 0 -> person[i][j] still in S state
+            if( (key_covid==0) && (ISModerateini != 0) ){ //if key_covid == 0 -> person[i][j] still in S state
                 
                 tmp = ISModerateini/totalPop;
                 rn = sortRandomNumber(&R);
 
                 if( rn<tmp ){
                     person[i][j]->changeState( ISModerate, sortTotalDaysOnState(minISModerate, maxISModerate) ); //changePersonState(i,j,S,ISModerate);
-                    key=1;
+                    key_covid=1;
                 }
             }
 
-            if( (key==0) && (ISSevereini != 0) ){ //if key == 0 -> person[i][j] still in S state
+            if( (key_covid==0) && (ISSevereini != 0) ){ //if key_covid == 0 -> person[i][j] still in S state
                 
                 tmp = ISSevereini/totalPop; 
                 rn = sortRandomNumber(&R);
                 
                 if( rn<tmp ){
                     person[i][j]->changeState( ISSevere, sortTotalDaysOnState(minISSevere, maxISSevere) );//changePersonState(i,j,S,ISSevere);
-                    key=1;
+                    key_covid=1;
                 }
             }
 
-            if( (key==0) && (Hini != 0) ){ //if key == 0 -> person[i][j] still in S state
+            if( (key_covid==0) && (Hini != 0) ){ //if key_covid == 0 -> person[i][j] still in S state
                 
                 tmp = Hini/totalPop;                 
                 rn = sortRandomNumber(&R);
 
                 if( rn<tmp ){
                     person[i][j]->changeState( H, sortTotalDaysOnState(minH, maxH) );//changePersonState(i,j,S,H);
-                    key=1;
+                    key_covid=1;
                 }
             }
 
-            if( (key==0) && (ICUini != 0) ){ //if key == 0 -> person[i][j] still in S state
+            if( (key_covid==0) && (ICUini != 0) ){ //if key_covid == 0 -> person[i][j] still in S state
                 
                 tmp = ICUini/totalPop;
 
@@ -222,11 +225,55 @@ void beginLatticeInfection(){
                 
                 if( rn<tmp ){
                     person[i][j]->changeState( ICU, sortTotalDaysOnState(minICU, maxICU) );//changePersonState(i,j,S,ICU);
-                    key=1;
+                    key_covid=1;
                 }
             }
 
-            key = 0; //set for the next person
+            key_covid = 0; //set for the next person
+
+        }
+    }
+
+    cout << "DONE" << endl;
+
+}
+
+void beginLatticeInfectionTb(){
+
+    double rn, tmp=0.0;
+
+    int key_tb=0;
+
+    double totalPop = L*L; //the "#define N = L*L" returns an int value which drops our accuracy      
+
+    cout << "beginning lattice infection...";
+
+    for(int i = 1; i <= L; i++){
+        for(int j = 1; j <= L; j++){
+
+            if( LSini != 0 ){
+
+                tmp = LSini/totalPop;
+                rn  = sortRandomNumber(&R);
+                
+                if( rn < tmp ){
+                    personTb[i][j]->changeState(LSTB,sortTotalDaysOnState(0,10));
+                    key_tb=1;
+                }
+            }
+            
+            if( (key_tb==0) && (TSini!=0) ){ //if key_tb == 0 -> person[i][j] still in S state
+                
+                tmp = TSini/totalPop;    
+                rn = sortRandomNumber(&R);
+                
+                if( rn < tmp ){
+                    personTb[i][j]->changeState(TSTB, sortTotalDaysOnState(0,10));//changePersonState(i,j,S,IP);
+                    key_tb=1;
+                }
+            }
+
+            key_tb = 0; //set for the next person
 
         }
     }

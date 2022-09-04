@@ -1,6 +1,8 @@
 
 double calcRecoveryProbISModerate(int i, int j){
     
+    //if(PRINTONSCREEN==TRUE){ cout << "calculating probability of recovery in ISM state..."; }
+
     if( person[i][j]->getAge() <= 60*365 ){ //younger
         return ProbRecoveryYoungerISModerate;
     }
@@ -22,6 +24,8 @@ double calcRecoveryProbISModerate(int i, int j){
 
 double calcRecoveryProbISSevere(int i, int j){
 
+    //if(PRINTONSCREEN==TRUE){ cout << "calculating probability of recovery in ISS state..."; }
+
     if( person[i][j]->getAge() <= 60*365 ){ //younger
         return ProbRecoveryYoungerISSevere;
     }
@@ -41,6 +45,8 @@ double calcRecoveryProbISSevere(int i, int j){
 }
 
 double calcRecoveryProbH(int i, int j){
+
+    //if(PRINTONSCREEN==TRUE){ cout << "calculating probability of recovery in H state..."; }
 
     if( person[i][j]->getAge() <= 20*365 ){ //younger
         return ProbRecoveryYoungerH;
@@ -75,6 +81,8 @@ double calcRecoveryProbH(int i, int j){
 
 double calcRecoveryProbICU(int i, int j){
     
+    //if(PRINTONSCREEN==TRUE){ cout << "calculating probability of recovery in ICU state..."; }
+
     if( person[i][j]->getAge() <= 60*365 ){ //younger
         return ProbRecoveryYoungerICU;
     }

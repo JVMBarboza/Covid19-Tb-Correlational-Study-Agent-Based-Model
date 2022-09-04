@@ -3,7 +3,7 @@ double ProbNaturalDeath[80];
 
 void beginNaturalDeathDistribution(){
 
-  if(PRINTONSCREEN==TRUE){ cout << "beginning natural death distribution..."; }
+  if(PRINTONSCREEN==TRUE){ cout << "calculating natural death distribution..."; }
 
   //IBGE
   ProbNaturalDeath[0] 	=	2.3583/1000.0; 

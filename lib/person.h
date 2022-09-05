@@ -34,8 +34,12 @@ class Person{
         
         static int total_naturalDeath;  
         static int total_covidDeath;  
-        //static int total_tbDeath;     
+        static int total_tbDeath;
+        static int total_coinfectionDeath;
+
         static int dailyDeathsByCovid;
+        static int dailyDeathsByTb;
+        static int dailyDeathsByCoinfection;
 
         static int availableBeds;
         static int availableBedsICU;

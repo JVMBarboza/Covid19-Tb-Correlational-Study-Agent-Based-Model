@@ -18,6 +18,8 @@
 
 #define NATURALCAUSES 0
 #define COVID         1
+#define TB            2
+#define COINFECTION   3
 
 
 /*##################################################################################*/
@@ -64,10 +66,16 @@
 #define L 317       /* Linear size of the lattice */
 #define N L*L
 
-#define DAYS 200    /* Number of days simulated */
+#define TbSpreadingDays 365*10 // 10 years of TB spread
+#define CovidEpidemyDays 200   // 200 days of covid spread after the 10 years of tb spreading
+   
+#define BetaS2dot5 0.098362971295 // OK       /* Infectivity of type S bacteria 1 active generates 2.5 new cases */
+#define BetaS2dot0 0.067371898147 // OK
+#define BetaS1dot5 0.045831223229 // OK
 
-#define Beta 0.20   
+#define BetaTB BetaS1dot5
 
+#define Beta 0.20 //beta covid
 
 /*****  DEMOGRAPHIC PARAMETERS****/
 #define Density LOW
@@ -146,28 +154,44 @@
 #define ProbRecoveryGreater90_ICU 0.08333
 
 /*  Periods on states */
-#define minLatency 0.0           // days
-#define maxLatency 27.5          // days
+#define minLatency 0.0     // days
+#define maxLatency 27.5    // days
 
 #define minIP 0.0          // days
-#define maxIP 14.5        // days
+#define maxIP 14.5         // days
 
-#define minIA 0.0        // days
-#define maxIA 7.5        // days
+#define minIA 0.0          // days
+#define maxIA 7.5          // days
 
-#define minISLight 0.0          // days
-#define maxISLight 14.5        // days
+#define minISLight 0.0     // days
+#define maxISLight 14.5    // days
 
-#define minISModerate 0.0          // days
-#define maxISModerate 28.0        // days
+#define minISModerate 0.0  // days
+#define maxISModerate 28.0 // days
 
-#define minISSevere 0.0          // days
-#define maxISSevere 4.0        // days
+#define minISSevere 0.0    // days
+#define maxISSevere 4.0    // days
 
-#define minH 7.5
-#define maxH 45.5
+#define minH 7.5           // days
+#define maxH 45.5          // days
 
-#define minICU 10.5
-#define maxICU 60.5
+#define minICU 10.5        // days
+#define maxICU 60.5        // days
 
 /*********** TB DISEASE CONSTANT PARAMETERS **************/
+
+#define MuS 3.79e-4            // Probability of TB death for infected with S strain (per day) 
+#define coinfectionFactor 2.17 // Factor that multiplies MuS when coinfection is activated
+
+#define ProbActivationConinfection 0.01
+#define ProbRecoveryCoinfection 0.75
+
+
+/*  Periods on states */
+#define minTBLS 0  // days
+#define maxTBLS 10 // days
+
+#define minTBTS 0  // days
+#define maxTBTS 10 // days
+
+#define TimeForActivationConinfection 7 // days

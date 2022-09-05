@@ -46,7 +46,7 @@ class PersonTb{
         void setDaysOnTreatm(int);
 
         //METHODS
-        void death(int, int);
+        void death(int);
         void changeState(int, int);
         void update();
         

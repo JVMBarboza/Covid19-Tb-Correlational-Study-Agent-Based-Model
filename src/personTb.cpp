@@ -60,7 +60,7 @@ void PersonTb::printAtributes(){
             
 }
 
-void PersonTb::death(int newAge, int newAgeOfDeath){
+void PersonTb::death(int newAgeOfDeath){
         
     switch ( state ){   
         case STB:

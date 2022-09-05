@@ -121,12 +121,20 @@ void Person::death(int causeOfDeath, int newAge, int newAgeOfDeath, int newGende
             break;
     } // end of switch case
 
-    if ( causeOfDeath == COVID){
+    if ( causeOfDeath == NATURALCAUSES){
+        total_naturalDeath++;
+    }
+    else if ( causeOfDeath == COVID){
         dailyDeathsByCovid++;
         total_covidDeath++;
     }
-    if ( causeOfDeath == NATURALCAUSES){
-        total_naturalDeath++;
+    else if ( causeOfDeath == TB){
+        dailyDeathsByTb++;
+        total_tbDeath++;
+    }
+    else if ( causeOfDeath == COINFECTION){
+        dailyDeathsByCoinfection++;
+        total_coinfectionDeath++;
     }
 
     total_S++; //all dead in lattice will be replaced by an individual on S state

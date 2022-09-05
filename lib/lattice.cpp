@@ -1,6 +1,5 @@
 
 //copy data TO Person[x1][y1] FROM Person[x2][y2] 
-//parameters: x1,y1 from local followed by x2,y2 from source
 //call: copyData(x1,y1,x2,y2)
 void copyData(int xone, int yone, int xtwo, int ytwo){
 
@@ -135,7 +134,7 @@ void beginLatticeInfection(){
 
     double totalPop = L*L; //the "#define N = L*L" returns an int value which drops our accuracy      
 
-    cout << "beginning lattice infection...";
+    cout << "beginning covid lattice infection...";
 
     for(int i = 1; i <= L; i++){
         for(int j = 1; j <= L; j++){

@@ -17,6 +17,8 @@ double minRandomContacts;
 double numberOfHospitalBeds;
 double numberOfICUBeds;
 
+double tmp1, tmp2;
+
 #include "../lib/person.h"
 #include "../lib/personTb.h"
 
@@ -46,7 +48,12 @@ int Person::total_Recovered = 0;
 
 int Person::total_naturalDeath = 0;  
 int Person::total_covidDeath = 0;       
+int Person::total_tbDeath = 0;
+int Person::total_coinfectionDeath = 0;
+
 int Person::dailyDeathsByCovid = 0;
+int Person::dailyDeathsByTb    = 0;
+int Person::dailyDeathsByCoinfection = 0;
 
 int Person::availableBeds = 0;
 int Person::availableBedsICU = 0;
@@ -103,7 +110,7 @@ int main(int argc, char *argv[]){
     beginAgeDistribution();
     beginNaturalDeathDistribution();
     beginLattice( numberOfHospitalBeds*(1 - AverageOcupationRateBeds) , numberOfICUBeds*(1 - AverageOcupationRateBedsICU) );
-    beginLatticeInfection();
+    //beginLatticeInfection();
     beginLatticeInfectionTb();
     updateLattice();
 
@@ -118,22 +125,89 @@ int main(int argc, char *argv[]){
         printLatticeOnFile();
     }
 
+    ////////////////////////// TB SPREADS IN POPULATION ///////////////////////////////////////
 
-    //////////////////////////  SIMULATION DYNAMICS ////////////////////////////////////////
-    for(int time=1; time <= DAYS; time++){
+    for(int time=1; time <= TbSpreadingDays; time++){
 
-        for(int i = 1; i <= L; i++){ //RUNNING TRHOUGH LATTICE IN A GIVEN TIME
+        for(int i = 1; i <= L; i++){ //RUNNING TRHOUGH LATTICE IN GIVEN TIME
+            for(int j = 1; j <= L; j++){
+            
+                if( person[i][j]->getAge() >= person[i][j]->getAgeOfDeath() ){
+                    
+                    tmp1 = sortPersonAgeOfDeath();
+                
+                    person[i][j]->death( NATURALCAUSES, sortPersonAge(), tmp1, sortPersonGender(), sortPopPorcentageInIsolation() );
+                    personTb[i][j]->death( tmp1 );
+                }
+                else{
+                    switch( personTb[i][j]->getState() ){
+                        case STB:
+                            if( veryfiesTbInfectionByNeighbors(i,j) ) //contagion
+                                personTb[i][j]->changeState(LSTB, sortTotalDaysOnState( minTBLS, maxTBLS));
+                            else
+                                personTb[i][j]->setSwap(STB);
+                            break;
+
+                        case LSTB:
+                            if( personTb[i][j]->getDaysOnState() >= personTb[i][j]->getStateTotalDays() ) //moves to TBTS state
+                                personTb[i][j]->changeState(TSTB, sortTotalDaysOnState(minTBTS, maxTBTS));
+                            else
+                                personTb[i][j]->setSwap(LSTB);
+
+                            break;
+
+                        case TSTB:
+                            rn = sortRandomNumber(&R);
+
+                            if( rn <= MuS)
+                                person[i][j]->death(TB, sortPersonAge(), sortPersonAgeOfDeath(), sortPersonGender(), sortPopPorcentageInIsolation());
+                            else
+                                personTb[i][j]->setSwap(TSTB);
+
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
+        updateLattice();
+
+        if( PRINTONSCREENTB==TRUE )
+            printTbOnScreen(time);
+
+        Person::dailyDeathsByTb = 0;
+
+    }
+
+
+    //////////////////////////  COVID EPIDEMICS STARTS ////////////////////////////////////////
+
+    beginLatticeInfection();
+    updateLattice();
+    
+    for(int time=1; time <= CovidEpidemyDays; time++){
+
+        //INSERT THE SAME TB DYNAMICS
+
+        for(int i = 1; i <= L; i++){ //RUNNING TRHOUGH LATTICE IN GIVEN TIME
             for(int j = 1; j <= L; j++){
 
                 if( person[i][j]->getAge() >= person[i][j]->getAgeOfDeath() ){
-                    person[i][j]->death( NATURALCAUSES, sortPersonAge(), sortPersonAgeOfDeath(), sortPersonGender(), sortPopPorcentageInIsolation() );
+                    
+                    tmp1 = sortPersonAgeOfDeath();
+                
+                    person[i][j]->death( NATURALCAUSES, sortPersonAge(), tmp1, sortPersonGender(), sortPopPorcentageInIsolation() );
+                    personTb[i][j]->death( tmp1 );
                 }
                 else{
                     switch( person[i][j]->getState() ){
                         
                         case S:
 
-                            if( veryfiesInfectionByNeighbors(i,j) == 1 ) //contagion 
+                            if( veryfiesCovidInfectionByNeighbors(i,j) ) //contagion 
                                 person[i][j]->changeState(E, sortTotalDaysOnState(minLatency, maxLatency) );
                             else                          
                                 person[i][j]->setSwap(S);// no contagion, remains S
@@ -325,6 +399,8 @@ int main(int argc, char *argv[]){
             printCountOnFile(FALSE); 
         
         Person::dailyDeathsByCovid = 0;
+        Person::dailyDeathsByTb    = 0;
+        Person::dailyDeathsByCoinfection = 0;
 
     }//for time end    
 

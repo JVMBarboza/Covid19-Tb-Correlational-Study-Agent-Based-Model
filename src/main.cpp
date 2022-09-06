@@ -134,36 +134,45 @@ int main(int argc, char *argv[]){
             
                 if( person[i][j]->getAge() >= person[i][j]->getAgeOfDeath() ){
                     
-                    tmp1 = sortPersonAgeOfDeath();
+                    tmp1 = sortPersonAgeOfDeath(); //TRANSFORMAR EM UMA FUNÇÃO APENAS
                 
                     person[i][j]->death( NATURALCAUSES, sortPersonAge(), tmp1, sortPersonGender(), sortPopPorcentageInIsolation() );
                     personTb[i][j]->death( tmp1 );
                 }
                 else{
                     switch( personTb[i][j]->getState() ){
+                        
                         case STB:
-                            if( veryfiesTbInfectionByNeighbors(i,j) ) //contagion
+                            if( veryfiesTbInfectionByNeighbors(i,j) == 1 ) //contagion
                                 personTb[i][j]->changeState(LSTB, sortTotalDaysOnState( minTBLS, maxTBLS));
                             else
                                 personTb[i][j]->setSwap(STB);
                             break;
 
                         case LSTB:
+                        
                             if( personTb[i][j]->getDaysOnState() >= personTb[i][j]->getStateTotalDays() ) //moves to TBTS state
-                                personTb[i][j]->changeState(TSTB, sortTotalDaysOnState(minTBTS, maxTBTS));
+                                personTb[i][j]->changeState(TSTB, -1);
                             else
                                 personTb[i][j]->setSwap(LSTB);
-
+                            
                             break;
 
                         case TSTB:
+                            
                             rn = sortRandomNumber(&R);
 
-                            if( rn <= MuS)
-                                person[i][j]->death(TB, sortPersonAge(), sortPersonAgeOfDeath(), sortPersonGender(), sortPopPorcentageInIsolation());
+                            if( rn <= MuS){
+
+                                tmp1 = sortPersonAgeOfDeath();
+                
+                                person[i][j]->death( TB, sortPersonAge(), tmp1, sortPersonGender(), sortPopPorcentageInIsolation() );
+                                personTb[i][j]->death( tmp1 );
+
+                            }
                             else
                                 personTb[i][j]->setSwap(TSTB);
-
+                            
                             break;
 
                         default:
@@ -174,6 +183,9 @@ int main(int argc, char *argv[]){
         }
 
         updateLattice();
+
+        if( PRINTONSCREEN==TRUE )
+            printOnScreen(time);
 
         if( PRINTONSCREENTB==TRUE )
             printTbOnScreen(time);

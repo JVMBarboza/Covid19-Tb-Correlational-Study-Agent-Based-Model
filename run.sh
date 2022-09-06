@@ -1,10 +1,9 @@
 #!/bin/bash
-
 #############################################################################
-#Script Name	: run.sh                                                                                             
-#Description	: Start simulations based on chosen configurations                                                                                                                                                                          
-#Author       	: João Victor M. Barboza                                                
-#Email         	: victorbarboza7657@gmail.com                                           
+# Script Name	: run.sh                                                                                             
+# Description	: Start simulations based on chosen configurations                                                                                                                                                                          
+# Author       	: João Victor M. Barboza                                                
+# Email         : victorbarboza7657@gmail.com                                           
 #############################################################################
 
 

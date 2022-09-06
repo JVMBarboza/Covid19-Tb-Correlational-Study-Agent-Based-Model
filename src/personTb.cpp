@@ -84,8 +84,8 @@ void PersonTb::death(int newAgeOfDeath){
         
     //reset object atributes
     setAgeOfDeath(newAgeOfDeath);
-    setState(S);
-    setSwap(S);
+    setState(STB);
+    setSwap(STB);
     setStateTotalDays(-1);
     setDaysOnState(0);
     setTreatmTotalDays(-1);
@@ -116,7 +116,7 @@ void PersonTb::changeState(int newState, int newStateTotalDays){
         default:
            break;
        
-    }//switch case end 
+    }//switch case end  
            
     switch(state){
         case STB:

@@ -98,7 +98,7 @@ int veryfiesTbInfectionByNeighbors(int i , int j){
 					Randomj = sortRandomNumber(&R)*L + 1; //sort random j coordinate
 				}while(Randomj==j);
 		
-				if( person[Randomi][Randomj]->getState()==TSTB )
+				if( personTb[Randomi][Randomj]->getState()==TSTB )
 					KI++; 
 
 				mute++;	
@@ -112,25 +112,25 @@ int veryfiesTbInfectionByNeighbors(int i , int j){
 		/* Check 8 neighbors in the lattice */    
 		for(k=-1;k<=1;k++) 	
 			for(l=-1;l<=1;l++)
-				if( person[i+k][j+l]->getState()==TSTB )
+				if( personTb[i+k][j+l]->getState()==TSTB )
 					KI++;
 	}			
 	#else
 	{				
 	/* Check 4 neighbors in the lattice */    
-			if( person[i-1][j]->getState()==TSTB )
+			if( personTb[i-1][j]->getState()==TSTB )
 				KI++;
-			else if(person[i+1][j]->getState()==TSTB )
+			else if(personTb[i+1][j]->getState()==TSTB )
 				KI++;
-			else if(person[i][j-1]->getState()==TSTB )
+			else if(personTb[i][j-1]->getState()==TSTB )
 				KI++;
-			else if(person[i][j+1]->getState()==TSTB )
+			else if(personTb[i][j+1]->getState()==TSTB )
 				KI++;
 	}			
 	#endif
 	
 	if(KI > 0) // Calculate ProbContagion
-		ProbContagion = 1.0 - (1.0 - pow(BetaTB,(double)KI));
+		ProbContagion = 1.0 - pow(1.0 - BetaTB,(double)KI);
 	else
 		ProbContagion = 0.0;	
 

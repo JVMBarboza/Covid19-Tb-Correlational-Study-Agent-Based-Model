@@ -66,7 +66,7 @@
 #define L 317       /* Linear size of the lattice */
 #define N L*L
 
-#define TbSpreadingDays 365*10 // 10 years of TB spread
+#define TbSpreadingDays 365*1 // 10 years of TB spread
 #define CovidEpidemyDays 200   // 200 days of covid spread after the 10 years of tb spreading
    
 #define BetaS2dot5 0.098362971295 // OK       /* Infectivity of type S bacteria 1 active generates 2.5 new cases */

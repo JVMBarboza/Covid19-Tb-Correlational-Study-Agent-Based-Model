@@ -40,7 +40,10 @@ void printTbOnScreen(int time){
         cout << "Time:" << time 
             << " S:" << PersonTb::total_S 
             << " LS:" << PersonTb::total_LS
-            << " TS:" << PersonTb::total_TS << endl;
+            << " TS:" << PersonTb::total_TS
+            << " Sum: " << PersonTb::total_S+PersonTb::total_LS+PersonTb::total_TS
+            << " Daily Deaths: " << Person::dailyDeathsByTb 
+            << " Sum over TB Deaths: " << Person::total_tbDeath << endl;
     }
     
    

@@ -9,6 +9,7 @@
 
 #define TRUE 1
 #define FALSE 0
+#define NA -1
 
 #define MALE 0
 #define FEMALE 1
@@ -180,18 +181,24 @@
 
 /*********** TB DISEASE CONSTANT PARAMETERS **************/
 
-#define MuS 3.79e-4            // Probability of TB death for infected with S strain (per day) 
+#define MuS 379e-6           // Probability of TB death for infected with S strain (per day) 
 #define coinfectionFactor 2.17 // Factor that multiplies MuS when coinfection is activated
 
 #define ProbActivationConinfection 0.01
 #define ProbRecoveryCoinfection 0.75
 
+//#define dailyProbOfFastProgr 7.03e-5    /* daily probability of fast progression */
+//#define dailyProbOfFastProgr 2.84e-4    /* daily probability of fast progression in case of reinfection*/
 
-/*  Periods on states */
-#define minTBLS 0  // days
-#define maxTBLS 10 // days
+#define maxFastProgressionActivation      730        /* between 0 and 730 day may happen fast progression */
+#define minFastProgressionActivation      0
 
-#define minTBTS 0  // days
-#define maxTBTS 10 // days
+#define maxfastProgressionReinfActivation 180        /* between 0 and 180 day may happen fast progression in case of reinfection */
+#define minfastProgressionReinfActivation 0
 
-#define TimeForActivationConinfection 7 // days
+
+//TYPES OF INFECTION ACTIVATION
+#define firstActivationNone     0 // No exogenous reinfection has taken place
+#define firstActivationSactive  1 
+#define secondActivation        2
+#define secondActivationSactive 3

@@ -9,16 +9,17 @@ using namespace std;
 #include "../lib/personTb.h"
 
 //CONSTRUCTOR
-//call: PersonTb[i][j] = new PersonTb(newAgeOfDeath, newState, newSwap, newStateTotalDays, newDaysOnState, newTreatmTotalDays, newDaysOnTreatm);
-PersonTb::PersonTb(int i, int j, int newAgeOfDeath, int newState, int newSwap, int newStateTotalDays, int newDaysOnState, int newTreatmTotalDays, int newDaysOnTreatm){
+//call: PersonTb[i][j] = new PersonTb(newTypeOfInfection, newState, newSwap, newStateTotalDays, newDaysOnState, newTreatmTotalDays, newDaysOnTreatm);
+PersonTb::PersonTb(int i, int j, int newTypeOfInfection, int newState, int newSwap, int newStateTotalDays, int newDaysOnState, int newTreatmTotalDays, int newDaysOnTreatm, int newReinfection){
     
-    setAgeOfDeath(newAgeOfDeath);
+    settypeOfInfection(newTypeOfInfection);
     setState(newState);
     setSwap(newSwap);
     setStateTotalDays(newStateTotalDays);
     setDaysOnState(newDaysOnState);
     setTreatmTotalDays(newTreatmTotalDays);
     setDaysOnTreatm(newDaysOnTreatm);
+    setReinfection(newReinfection);
 
     if( (i>=1 && i<=L) && (j>=1 && j<=L) ){
         total_S++;   //only count individuals on the real lattice
@@ -30,37 +31,41 @@ PersonTb::PersonTb(int i, int j, int newAgeOfDeath, int newState, int newSwap, i
 PersonTb::~PersonTb(void){}
 
 //GETTERS
-int PersonTb::getAgeOfDeath(void){ return ageOfDeath; }
+int PersonTb::gettypeOfInfection(void){ return typeOfInfection; }
 int PersonTb::getState(void){ return state; }
 int PersonTb::getSwap(void){ return swap; }
 int PersonTb::getStateTotalDays(void){ return stateTotalDays; }
 int PersonTb::getDaysOnState(void){ return daysOnState; }
 int PersonTb::getTreatmTotalDays(void){ return treatmTotalDays; }
 int PersonTb::getDaysOnTreatm(void){ return daysOnTreatm; }
+int PersonTb::getReinfection(void){ return reinfection; }
 
 //SETTERS
-void PersonTb::setAgeOfDeath( int newAgeOfDeath ){           ageOfDeath = newAgeOfDeath; }
+void PersonTb::settypeOfInfection( int newTypeOfInfection ){           typeOfInfection = newTypeOfInfection; }
 void PersonTb::setState( int newState ){                     state = newState; }
 void PersonTb::setSwap( int newSwap ){                       swap = newSwap; }
 void PersonTb::setStateTotalDays( int newStateTotalDays ){   stateTotalDays = newStateTotalDays; }
 void PersonTb::setDaysOnState( int newDaysOnState ){         daysOnState = newDaysOnState; }
 void PersonTb::setTreatmTotalDays( int newTreatmTotalDays ){ treatmTotalDays = newTreatmTotalDays; }
 void PersonTb::setDaysOnTreatm( int newDaysOnTreatm ){       daysOnTreatm = newDaysOnTreatm; }
+void PersonTb::setReinfection( int newReinfection){          reinfection = newReinfection; }
+
+
 
 //METHODS
-
 void PersonTb::printAtributes(){
-            cout << "ageOfDeath: " << ageOfDeath << "\n" <<
+            cout << "typeOfInfection: " << typeOfInfection << "\n" <<
                     "state: " << state << "\n" <<  
                     "swap: " << swap << "\n" <<     
                     "stateTotalDays: " << stateTotalDays << "\n" <<
                     "daysOnState: " << daysOnState << "\n" <<   
                     "treatmTotalDays: " << treatmTotalDays << "\n" <<
-                    "daysOnTreatm: " << daysOnTreatm << "\n" << endl;
+                    "daysOnTreatm: " << daysOnTreatm << "\n" << 
+                    "reinfection: " << "\n" << endl;
             
 }
 
-void PersonTb::death(int newAgeOfDeath){
+void PersonTb::death(int newTypeOfInfection){
         
     switch ( state ){   
         case STB:
@@ -83,21 +88,22 @@ void PersonTb::death(int newAgeOfDeath){
     total_S++; //all dead in lattice will be replaced by an individual on S state
         
     //reset object atributes
-    setAgeOfDeath(newAgeOfDeath);
+    settypeOfInfection(newTypeOfInfection);
     setState(STB);
     setSwap(STB);
     setStateTotalDays(-1);
     setDaysOnState(0);
     setTreatmTotalDays(-1);
     setDaysOnTreatm(-1);
+    setReinfection(0);
 
 }
 
-//call: PersonTb[i][j]->changeState( nextState, sortTotalDaysOnState(minDays, maxDays) );
-void PersonTb::changeState(int newState, int newStateTotalDays){
+//call: PersonTb[i][j]->changeState( nextState, new stateTotalDays: sort(min,max) or NA, reinfection TRUE, FALSE or NA);
+void PersonTb::changeState(int newState, int newStateTotalDays, int reinfectionTrueOrFalse){
 
     setSwap(newState);
-    setDaysOnState(0); // PersonTb[i][j].daysOnState = 0;    
+    setDaysOnState(0);
     setStateTotalDays(newStateTotalDays);
 
     switch(newState){
@@ -107,6 +113,8 @@ void PersonTb::changeState(int newState, int newStateTotalDays){
 
         case LSTB:
             total_LS++;
+            if( reinfectionTrueOrFalse == TRUE )
+                setReinfection(TRUE);
             break;
 
         case TSTB:

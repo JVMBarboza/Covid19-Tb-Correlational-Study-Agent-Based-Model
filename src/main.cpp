@@ -62,7 +62,149 @@ int PersonTb::total_S  = 0;
 int PersonTb::total_LS = 0;
 int PersonTb::total_TS = 0;
 
+/*
+void CheckActivationfuncTB(int i, int j, int Turn)
+{
+  // Turn=1 for first activation, 2 for second activation
 
+int type;
+
+  int mute;
+
+  if(Turn==1) // first activation
+    {
+      aleat();
+      if(rn <= MaxActivation)
+	{
+	  Person[i][j].FirstActivation = Sactive;
+	  
+	  aleat();
+	  Person[i][j].ActiveTBDay = rn*(Person[i][j].AgeDeathDays - Person[i][j].AgeOfLatencyDaysTB - FastProgression - 1) + Person[i][j].AgeOfLatencyDaysTB + FastProgression;
+	   
+	  //if(WhichType==Sactive)
+	    Person[i][j].InfectionWithS++;
+	  //else if(WhichType==Ractive)
+	    //InfectionWithR[i][j]++;
+	  //else if(WhichType==XDRactive)
+	    //InfectionWithXDR[i][j]++;
+	}
+      else
+	{
+	  Person[i][j].FirstActivation = 0;
+
+	 // if(WhichType==Sactive)
+	    Person[i][j].InfectionWithS++;
+	 // else if(WhichType==Ractive)
+	   // InfectionWithR[i][j]++;
+	  //else if(WhichType==XDRactive)
+	    //InfectionWithXDR[i][j]++;
+	}
+    }
+  else if(Turn==2) // second activation - refinfection
+    {
+      if(type==Sactive && Person[i][j].FirstActivation==0)// re-infection with the same strain
+	{
+	  aleat();
+	  if(rn <= MaxActivation)
+	    {
+	      Person[i][j].SecondActivation = Sactive;
+	   
+	      aleat();
+	      Person[i][j].ActiveTBDay = rn*(Person[i][j].AgeDeathDays - Person[i][j].AgeOfLatencyDaysTB - FastProgression - 1) + Person[i][j].AgeOfLatencyDaysTB + FastProgression;
+		
+	    //  if(WhichType==Sactive)
+		Person[i][j].InfectionWithS++;
+	      //else if(WhichType==Ractive)
+		//InfectionWithR[i][j]++;
+	      //else if(WhichType==XDRactive)
+		//InfectionWithXDR[i][j]++;     
+	    }
+	  else
+	    {
+	      Person[i][j].SecondActivation = 0;
+
+	     //if(WhichType==Sactive)
+	       Person[i][j].InfectionWithS++;
+	     //else if(WhichType==Ractive)
+	       //InfectionWithR[i][j]++;
+	     //else if(WhichType==XDRactive)
+	       //InfectionWithXDR[i][j]++;
+	    }
+	}
+      else if(type==Sactive && Person[i][j].FirstActivation!=0)// re-infection with the same strain
+	{
+	      Person[i][j].SecondActivation = Person[i][j].FirstActivation;
+	     
+	      aleat();
+	      Person[i][j].ActiveTBDay = rn*(Person[i][j].AgeDeathDays - Person[i][j].AgeOfLatencyDaysTB - FastProgression2 - 1) + Person[i][j].AgeOfLatencyDaysTB + FastProgression2;
+		
+	      //if(WhichType==Sactive)
+		Person[i][j].InfectionWithS++;
+	      //else if(WhichType==Ractive)
+		//InfectionWithR[i][j]++;
+	      //else if(WhichType==XDRactive)
+		//InfectionWithXDR[i][j]++;
+	}
+      else if(type==Sactive && Person[i][j].FirstActivation==0)
+	{
+	  aleat();
+	  if(rn <= MaxActivation)
+	    {
+	      Person[i][j].SecondActivation = Sactive;
+	      
+	      aleat();
+	      Person[i][j].ActiveTBDay = rn*(Person[i][j].AgeDeathDays - Person[i][j].AgeOfLatencyDaysTB - FastProgression - 1) + Person[i][j].AgeOfLatencyDaysTB + FastProgression;
+	
+	    //  if(WhichType==Sactive)
+		Person[i][j].InfectionWithS++;
+	      //else if(WhichType==Ractive)
+		//InfectionWithR[i][j]++;
+	      //else if(WhichType==XDRactive)
+		//InfectionWithXDR[i][j]++;
+	    }
+	  else
+	    {
+	    Person[i][j].SecondActivation = 0;
+	   
+	    //if(WhichType==Sactive)
+	      Person[i][j].InfectionWithS++;
+	    //else if(WhichType==Ractive)
+	      //InfectionWithR[i][j]++;
+	    //else if(WhichType==XDRactive)
+	      //InfectionWithXDR[i][j]++; 
+	    }
+	}
+      else if(type==Sactive && Person[i][j].FirstActivation!=0)// re-infection with the same strain
+	{
+	  //if(WhichType==Sactive)
+	    Person[i][j].InfectionWithS++;
+	  //else if(WhichType==Ractive)
+	    //InfectionWithR[i][j]++;
+	   //else if(WhichType==XDRactive)
+	   // InfectionWithXDR[i][j]++;
+	  
+	  aleat();
+	  if(rn <= MaxActivation)
+	    {
+	      
+	      aleat();
+	      mute =  Person[i][j].ActiveTBDay = rn*(Person[i][j].AgeDeathDays - Person[i][j].AgeOfLatencyDaysTB - FastProgression - 1) + Person[i][j].AgeOfLatencyDaysTB + FastProgression;
+
+	      if(mute <= Person[i][j].ActiveTBDay)
+		{
+		  Person[i][j].ActiveTBDay = mute;
+		  Person[i][j].SecondActivation = Sactive;
+		  //CoinfectionActivation[i][j] = WhichType;
+		}
+	    }
+	  else
+	    Person[i][j].SecondActivation = 0;
+	}	
+    }
+}	
+    
+      // end of function
+*/
 
 int main(int argc, char *argv[]){
     
@@ -144,7 +286,7 @@ int main(int argc, char *argv[]){
                         
                         case STB:
                             if( veryfiesTbInfectionByNeighbors(i,j) == 1 ) //contagion
-                                personTb[i][j]->changeState(LSTB, sortTotalDaysOnState( minTBLS, maxTBLS));
+                                personTb[i][j]->changeState(LSTB, 0, FALSE);
                             else
                                 personTb[i][j]->setSwap(STB);
                             break;
@@ -152,7 +294,7 @@ int main(int argc, char *argv[]){
                         case LSTB:
                         
                             if( personTb[i][j]->getDaysOnState() >= personTb[i][j]->getStateTotalDays() ) //moves to TBTS state
-                                personTb[i][j]->changeState(TSTB, -1);
+                                personTb[i][j]->changeState(TSTB, -1, NA);
                             else
                                 personTb[i][j]->setSwap(LSTB);
                             

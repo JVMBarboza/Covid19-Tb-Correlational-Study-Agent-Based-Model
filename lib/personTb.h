@@ -5,13 +5,14 @@ using namespace std;
 
 class PersonTb{
     private:
-        int ageOfDeath;
+        int typeOfInfection;
         int state;  
         int swap;     
         int stateTotalDays;
         int daysOnState;   
         int treatmTotalDays;
         int daysOnTreatm;
+        int reinfection;
 
 
     public:
@@ -22,32 +23,34 @@ class PersonTb{
         static int total_TS;
 
         //CONSTRUCTOR
-        PersonTb(int, int, int, int, int, int, int, int, int);
+        PersonTb(int, int, int, int, int, int, int, int, int, int);
         
         //DESTRUTOR
         ~PersonTb(void);
 
         //GETTERS
-        int getAgeOfDeath(void);
+        int gettypeOfInfection(void);
         int getState(void);
         int getSwap(void);
         int getStateTotalDays(void);
         int getDaysOnState(void);
         int getTreatmTotalDays(void);
         int getDaysOnTreatm(void);
+        int getReinfection(void);
 
         //SETTERS
-        void setAgeOfDeath(int);
+        void settypeOfInfection(int);
         void setState(int);
         void setSwap(int);
         void setStateTotalDays(int);
         void setDaysOnState(int);
         void setTreatmTotalDays(int);
         void setDaysOnTreatm(int);
+        void setReinfection(int);
 
         //METHODS
         void death(int);
-        void changeState(int, int);
+        void changeState(int, int, int);
         void update();
         
         void printAtributes();

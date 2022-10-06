@@ -11,6 +11,9 @@
 #define FALSE 0
 #define NA -1
 
+#define FIRST 1
+#define SECOND 2
+
 #define MALE 0
 #define FEMALE 1
 
@@ -45,9 +48,10 @@
 /*##################################################################################*/
 /*############################### TB STATES ########################################*/
 /*##################################################################################*/
-#define STB  20 
-#define LSTB 21
-#define TSTB 22
+#define STB           20 
+#define LSTB          21
+#define LSTBEXOGENOUS 22
+#define TSTB          23
 
 
 
@@ -67,14 +71,14 @@
 #define L 317       /* Linear size of the lattice */
 #define N L*L
 
-#define TbSpreadingDays 365*1 // 10 years of TB spread
+#define TbSpreadingDays 365*10 // 10 years of TB spread
 #define CovidEpidemyDays 200   // 200 days of covid spread after the 10 years of tb spreading
    
 #define BetaS2dot5 0.098362971295 // OK       /* Infectivity of type S bacteria 1 active generates 2.5 new cases */
 #define BetaS2dot0 0.067371898147 // OK
 #define BetaS1dot5 0.045831223229 // OK
 
-#define BetaTB BetaS1dot5
+#define BetaTB BetaS2dot5
 
 #define Beta 0.20 //beta covid
 
@@ -181,24 +185,32 @@
 
 /*********** TB DISEASE CONSTANT PARAMETERS **************/
 
-#define MuS 379e-6           // Probability of TB death for infected with S strain (per day) 
+#define MuS 0.00000379 //379e-6           // Probability of TB death for infected with S strain (per day) 
 #define coinfectionFactor 2.17 // Factor that multiplies MuS when coinfection is activated
 
 #define ProbActivationConinfection 0.01
 #define ProbRecoveryCoinfection 0.75
 
-//#define dailyProbOfFastProgr 7.03e-5    /* daily probability of fast progression */
-//#define dailyProbOfFastProgr 2.84e-4    /* daily probability of fast progression in case of reinfection*/
+#define dailyProbOfFastProgr 0.0000703 //7.03e-5    /* daily probability of fast progression */
+#define dailyProbOfFastProgr2 0.000284 //2.84e-4    /* daily probability of fast progression in case of reinfection*/
 
-#define maxFastProgressionActivation      730        /* between 0 and 730 day may happen fast progression */
-#define minFastProgressionActivation      0
+#define maxFastProgressionActivation 730        /* between 0 and 730 day may happen fast progression */
+#define minFastProgressionActivation 0
 
 #define maxfastProgressionReinfActivation 180        /* between 0 and 180 day may happen fast progression in case of reinfection */
 #define minfastProgressionReinfActivation 0
 
 
-//TYPES OF INFECTION ACTIVATION
-#define firstActivationNone     0 // No exogenous reinfection has taken place
-#define firstActivationSactive  1 
-#define secondActivation        2
-#define secondActivationSactive 3
+//TYPES OF INFECTION
+#define firstActivationNone     0 // No infection has taken place
+#define firstActivationSactive  1 // infection has taken place
+#define secondActivationNone    2 // No exogenous infection has taken place
+#define secondActivationSactive 3 // Exogenous infection has taken place
+
+
+#define timeForActivateCoinfection 7
+
+#define fastProgression 730
+#define fastProgressionIncreased 180
+
+#define maxActivation 0.1  // fraction of latent individual that will progress to activation

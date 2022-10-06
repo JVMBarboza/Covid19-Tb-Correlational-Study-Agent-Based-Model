@@ -5,7 +5,7 @@
 #define max 4294967295.0 
 unsigned s = 88912123;
 unsigned 
-R = 89330271
+R = 89330270
 ;
 
 //Sort number between 0 and 1

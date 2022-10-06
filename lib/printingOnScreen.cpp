@@ -38,10 +38,11 @@ void printTbOnScreen(int time){
 
 
         cout << "Time:" << time 
-            << " S:" << PersonTb::total_S 
-            << " LS:" << PersonTb::total_LS
-            << " TS:" << PersonTb::total_TS
-            << " Sum: " << PersonTb::total_S+PersonTb::total_LS+PersonTb::total_TS
+            << " S:" << Person::total_TBS 
+            << " LS:" << Person::total_TBLS
+            << " LS EXOGENOUS:" << Person::total_TBLSEXOGENOUS
+            << " TS:" << Person::total_TBTS
+            << " Sum: " << Person::total_TBS+Person::total_TBLS+Person::total_TBLSEXOGENOUS+Person::total_TBTS
             << " Daily Deaths: " << Person::dailyDeathsByTb 
             << " Sum over TB Deaths: " << Person::total_tbDeath << endl;
     }

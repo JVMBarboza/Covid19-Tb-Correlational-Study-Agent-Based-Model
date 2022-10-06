@@ -16,6 +16,15 @@ class Person{
         int daysOnTreatm;
         int isolation;
 
+        int typeOfTbInfection;
+        int tbState;  
+        int tbSwap;     
+        int tbStateTotalDays;
+        int daysOnTbState;   
+        int activeTbDays;
+        int activation;  
+        int tbExposures; //if true and agent gets infective, it means that the same already had previous tb infection
+
 
     public:
 
@@ -44,14 +53,21 @@ class Person{
         static int availableBeds;
         static int availableBedsICU;
 
+        static int total_TBS;
+        static int total_TBLS;
+        static int total_TBLSEXOGENOUS;
+        static int total_TBTS;
+
 
         //CONSTRUCTOR
-        Person(int, int, int,int,int,int,int,int,int,int,int,int);
+        Person(int,int, int,int,int,int,int,int,int,int,int,int, int,int,int,int,int,int,int,int);
         
         //DESTRUTOR
         ~Person(void);
 
         //GETTERS
+
+        //covid
         int getAge(void);
         int getAgeOfDeath(void);
         int getGender(void);
@@ -62,8 +78,20 @@ class Person{
         int getTreatmTotalDays(void);
         int getDaysOnTreatm(void);
         int getIsolation(void);
+        //tb
+        int getTypeOfTbInfection(void);
+        int getTbState(void);
+        int getTbSwap(void);
+        int getTbStateTotalDays(void);
+        int getDaysOnTbState(void);
+        int getActiveTbDays(void);
+        int getActivation(void);
+        int getTbExposures(void);
+
 
         //SETTERS
+        
+        //covid
         void setAge(int);
         void setAgeOfDeath(int);
         void setGender(int);
@@ -74,15 +102,27 @@ class Person{
         void setTreatmTotalDays(int);
         void setDaysOnTreatm(int);
         void setIsolation(int);
+        //tb
+        void setTypeOfTbInfection(int);
+        void setTbState(int);
+        void setTbSwap(int);
+        void setTbStateTotalDays(int);
+        void setDaysOnTbState(int);
+        void setActiveTbDays(int);
+        void setActivation(int);
+        void setTbExposures(int);
+
 
         //METHODS
         void death(int, int, int, int, int);
         void changeState(int, int);
+        void changeTbState(int, int);
         void update();
         
         void manageAvailableBeds(int , int);
         
         void printAtributes();
+        void printTbAtributes();
         void printCount();
 
 };

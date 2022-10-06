@@ -82,7 +82,7 @@ int veryfiesTbInfectionByNeighbors(int i , int j){
   	double ProbContagion;         
 	
 	//Random contacts for non isolated individuals
-	if( person[i][j]->getIsolation() == IsolationNo){
+	if( person[i][j]->getIsolation()==IsolationNo ){
 		
 		RandomContacts = sortRandomNumberInteger(minRandomContacts, maxRandomContacts+1); 	
 	
@@ -98,7 +98,7 @@ int veryfiesTbInfectionByNeighbors(int i , int j){
 					Randomj = sortRandomNumber(&R)*L + 1; //sort random j coordinate
 				}while(Randomj==j);
 		
-				if( personTb[Randomi][Randomj]->getState()==TSTB )
+				if( person[Randomi][Randomj]->getTbState()==TSTB )
 					KI++; 
 
 				mute++;	
@@ -112,20 +112,20 @@ int veryfiesTbInfectionByNeighbors(int i , int j){
 		/* Check 8 neighbors in the lattice */    
 		for(k=-1;k<=1;k++) 	
 			for(l=-1;l<=1;l++)
-				if( personTb[i+k][j+l]->getState()==TSTB )
+				if( person[i+k][j+l]->getTbState()==TSTB )
 					KI++;
 	}			
 	#else
 	{				
 	/* Check 4 neighbors in the lattice */    
-			if( personTb[i-1][j]->getState()==TSTB )
-				KI++;
-			else if(personTb[i+1][j]->getState()==TSTB )
-				KI++;
-			else if(personTb[i][j-1]->getState()==TSTB )
-				KI++;
-			else if(personTb[i][j+1]->getState()==TSTB )
-				KI++;
+		if( person[i-1][j]->getTbState()==TSTB )
+			KI++;
+		else if(person[i+1][j]->getTbState()==TSTB )
+			KI++;
+		else if(person[i][j-1]->getTbState()==TSTB )
+			KI++;
+		else if(person[i][j+1]->getTbState()==TSTB )
+			KI++;
 	}			
 	#endif
 	
@@ -144,5 +144,5 @@ int veryfiesTbInfectionByNeighbors(int i , int j){
 			Contagion = 0;
 	}	
 
-	return Contagion; //if 1 -> change state from S to E in (i,j) coordinates
+	return Contagion; //if 1 -> change state from TBS TO TBLS in (i,j) coordinates
 }

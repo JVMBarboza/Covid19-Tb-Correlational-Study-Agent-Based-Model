@@ -3,6 +3,7 @@
 //call: copyData(x1,y1,x2,y2)
 void copyData(int xone, int yone, int xtwo, int ytwo){
 
+    //copy covid data
     person[xone][yone]->setAge( person[xtwo][ytwo]->getAge() );          
     person[xone][yone]->setAgeOfDeath( person[xtwo][ytwo]->getAgeOfDeath() );
     person[xone][yone]->setGender( person[xtwo][ytwo]->getGender() );   
@@ -14,14 +15,16 @@ void copyData(int xone, int yone, int xtwo, int ytwo){
     person[xone][yone]->setDaysOnTreatm( person[xtwo][ytwo]->getDaysOnTreatm() );
     person[xone][yone]->setIsolation( person[xtwo][ytwo]->getIsolation() );
     
-    personTb[xone][yone]->settypeOfInfection( personTb[xtwo][ytwo]->gettypeOfInfection() );
-    personTb[xone][yone]->setState( personTb[xtwo][ytwo]->getState() ); 
-    personTb[xone][yone]->setSwap( personTb[xtwo][ytwo]->getSwap() );     
-    personTb[xone][yone]->setStateTotalDays( personTb[xtwo][ytwo]->getStateTotalDays() ); 
-    personTb[xone][yone]->setDaysOnState( personTb[xtwo][ytwo]->getDaysOnState() );       
-    personTb[xone][yone]->setTreatmTotalDays( personTb[xtwo][ytwo]->getTreatmTotalDays() );
-    personTb[xone][yone]->setDaysOnTreatm( personTb[xtwo][ytwo]->getDaysOnTreatm() );
-    personTb[xone][yone]->setReinfection( personTb[xtwo][ytwo]->getReinfection() );
+    //copy tb data
+    person[xone][yone]->setTypeOfTbInfection( person[xtwo][ytwo]->getTypeOfTbInfection() );
+    person[xone][yone]->setTbState( person[xtwo][ytwo]->getTbState() );
+    person[xone][yone]->setTbSwap( person[xtwo][ytwo]->getTbSwap() );
+    person[xone][yone]->setTbStateTotalDays( person[xtwo][ytwo]->getTbStateTotalDays() );
+    person[xone][yone]->setDaysOnTbState( person[xtwo][ytwo]->getDaysOnTbState() );
+    person[xone][yone]->setActiveTbDays( person[xtwo][ytwo]->getActiveTbDays() );
+    person[xone][yone]->setActivation( person[xtwo][ytwo]->getActivation() );
+    person[xone][yone]->setTbExposures( person[xtwo][ytwo]->getTbExposures() );
+    
 
 }
 
@@ -47,7 +50,6 @@ void updateAuxiliarLattice(){
 
         //copy left auxiliar from right real
         copyData(0,i,L,i);
-
     }
 
 }
@@ -57,15 +59,11 @@ void updateLattice(){
     //update real lattice
     for(int i = 1; i <= L; i++){
         for(int j = 1; j <= L; j++){
-
             person[i][j]->update();
-            personTb[i][j]->update();
-                       
         }
     }
 
     updateAuxiliarLattice();
-
 }
 
 void beginLattice(int tmpAvailableBeds, int tmpAvailableBedsICU){
@@ -75,8 +73,7 @@ void beginLattice(int tmpAvailableBeds, int tmpAvailableBedsICU){
     for(int i = 0; i <= L+1; i++){
         for(int j = 0; j <= L+1; j++){
 
-            person[i][j]   = new Person( i, j, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
-            personTb[i][j] = new PersonTb( i, j, 0, 0, 0, 0, 0, 0, 0, 0);
+            person[i][j]   = new Person( i, j, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
         }
     }
@@ -85,34 +82,33 @@ void beginLattice(int tmpAvailableBeds, int tmpAvailableBedsICU){
 
     cout << "DONE" << endl;
 
-
     cout << "calculating real lattice values...";
 
     for(int i = 1; i <= L; i++){
         for(int j = 1; j <= L; j++){
             
-            //main class atributes
+            //COVID atributes
             person[i][j]->setAge( sortPersonAge() );
             person[i][j]->setAgeOfDeath( sortPersonAgeOfDeath() );
             person[i][j]->setGender( sortPersonGender() );
             person[i][j]->setState( S );
             person[i][j]->setSwap( S );
-            person[i][j]->setStateTotalDays( -1 );
+            person[i][j]->setStateTotalDays( NA );
             person[i][j]->setDaysOnState( 0 );
-            person[i][j]->setTreatmTotalDays( -1 );
-            person[i][j]->setDaysOnTreatm( -1 );
+            person[i][j]->setTreatmTotalDays( NA );
+            person[i][j]->setDaysOnTreatm( NA );
             person[i][j]->setIsolation( sortPopPorcentageInIsolation() );
 
-            //tb class atributes
-            personTb[i][j]->settypeOfInfection( firstActivationNone );
-            personTb[i][j]->setState( STB );
-            personTb[i][j]->setSwap( STB );
-            personTb[i][j]->setStateTotalDays( -1 );
-            personTb[i][j]->setDaysOnState( 0 );
-            personTb[i][j]->setTreatmTotalDays( -1 );
-            personTb[i][j]->setDaysOnTreatm( -1 );
-            personTb[i][j]->setReinfection( FALSE );
-
+            //TB atributes
+            person[i][j]->setTypeOfTbInfection(firstActivationNone);
+            person[i][j]->setTbState(STB);
+            person[i][j]->setTbSwap(STB);
+            person[i][j]->setTbStateTotalDays(NA);
+            person[i][j]->setDaysOnTbState(0);
+            person[i][j]->setActiveTbDays(NA);
+            person[i][j]->setActivation(FIRST);
+            person[i][j]->setTbExposures(0);
+        
         }
     }
 
@@ -129,11 +125,9 @@ void beginLattice(int tmpAvailableBeds, int tmpAvailableBedsICU){
 
 void beginLatticeInfection(){
 
-    double rn, tmp=0.0;
+    double rn, tmp=0.0, totalPop = L*L;
 
     int key_covid=0;
-
-    double totalPop = L*L; //the "#define N = L*L" returns an int value which drops our accuracy      
 
     cout << "beginning covid lattice infection...";
 
@@ -240,13 +234,10 @@ void beginLatticeInfection(){
 
 void beginLatticeInfectionTb(){
 
-    double rn, tmp=0.0;
-
+    double tmp=0.0, totalPop = L*L;
     int key_tb=0;
 
-    double totalPop = L*L; //the "#define N = L*L" returns an int value which drops our accuracy      
-
-    cout << "beginning lattice infection...";
+    cout << "beginning tb lattice infection...";
 
     for(int i = 1; i <= L; i++){
         for(int j = 1; j <= L; j++){
@@ -254,22 +245,30 @@ void beginLatticeInfectionTb(){
             if( LSini != 0 ){
 
                 tmp = LSini/totalPop;
-                rn  = sortRandomNumber(&R);
                 
-                if( rn < tmp ){
-                    personTb[i][j]->changeState(LSTB, NA, FALSE);
+                if( sortRandomNumber(&R) < tmp ){
+                    person[i][j]->changeTbState(LSTB, NA);
+                    checkTbActivation(i,j);
+
                     key_tb=1;
+
+                    //person[i][j]->printAtributes();
+                    //person[i][j]->printTbAtributes();
                 }
             }
             
             if( (key_tb==0) && (TSini!=0) ){ //if key_tb == 0 -> person[i][j] still in S state
                 
                 tmp = TSini/totalPop;    
-                rn = sortRandomNumber(&R);
                 
-                if( rn < tmp ){
-                    personTb[i][j]->changeState(TSTB, NA, FALSE);//changePersonState(i,j,S,IP);
+                if( sortRandomNumber(&R) < tmp ){
+                    person[i][j]->changeTbState(TSTB, NA); //changePersonState(i,j,S,IP);
+                    person[i][j]->setTypeOfTbInfection(firstActivationSactive);
+                    
                     key_tb=1;
+
+                    //person[i][j]->printAtributes();
+                    //person[i][j]->printTbAtributes();
                 }
             }
 

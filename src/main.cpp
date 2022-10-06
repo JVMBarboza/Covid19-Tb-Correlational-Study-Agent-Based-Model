@@ -17,18 +17,103 @@ double minRandomContacts;
 double numberOfHospitalBeds;
 double numberOfICUBeds;
 
-double tmp1, tmp2;
+//double tmp1, tmp2;
+
+double probDeath;
+double probRecoveryCovid;
+double probCureTreatment;
+
+int contagion = 0;
 
 #include "../lib/person.h"
-#include "../lib/personTb.h"
+//#include "../lib/personTb.h"
 
 Person   *person[L+2][L+2];
-PersonTb *personTb[L+2][L+2];
+//PersonTb *personTb[L+2][L+2];
 
 #include "../lib/calcAgeDistribution.cpp"
 #include "../lib/calcNaturalDeathDistribution.cpp"
 #include "../lib/calcRecoveryProbabilities.cpp"
 #include "../lib/studyInfectionInNeighborhood.cpp"
+
+void checkTbActivation(int i, int j){
+
+    int type, mute;
+
+    double rn;
+
+    if( person[i][j]->getActivation() == FIRST ){ // first infection
+        
+        rn = sortRandomNumber(&R);
+
+        if(rn <= maxActivation){ //10% will develop activate cases
+            person[i][j]->setTypeOfTbInfection( firstActivationSactive );
+            person[i][j]->setActiveTbDays( sortRandomNumber(&R)*( person[i][j]->getAgeOfDeath() - person[i][j]->getAge() - fastProgression - 1) + person[i][j]->getAge() + fastProgression );
+        }
+        else{ //won't develop activate cases
+            person[i][j]->setTypeOfTbInfection(firstActivationNone);
+            person[i][j]->setActiveTbDays(NA);
+        }
+
+    }
+    else if( person[i][j]->getActivation() == SECOND ){ // second infection
+        
+        if( person[i][j]->getTypeOfTbInfection()==firstActivationNone ){ //no activation in first infection
+            
+            rn = sortRandomNumber(&R);
+
+            if(rn <= maxActivation){ //10% will develop activate cases
+                person[i][j]->setTypeOfTbInfection(secondActivationSactive);
+                person[i][j]->setActiveTbDays( sortRandomNumber(&R)*( person[i][j]->getAgeOfDeath() - person[i][j]->getAge() - fastProgression - 1) + person[i][j]->getAge() + fastProgression );
+            }
+            else{ //won't develop activate cases
+                person[i][j]->setTypeOfTbInfection(secondActivationNone);
+            }
+        }
+        else if( person[i][j]->getTypeOfTbInfection()==firstActivationSactive ){
+            
+            person[i][j]->setTypeOfTbInfection(secondActivationSactive);
+            person[i][j]->setActiveTbDays( sortRandomNumber(&R)*( person[i][j]->getAgeOfDeath() - person[i][j]->getAge() - fastProgression - 1) + person[i][j]->getAge() + fastProgressionIncreased );
+
+        }
+        else{
+            //do nothing, already calculated, just for error handling i wrote this
+        }
+
+    }
+
+}
+
+void newExposure(int i, int j){
+
+    if( (person[i][j]->getTbExposures()<=2) && (person[i][j]->getActivation()==SECOND) )
+        contagion = veryfiesTbInfectionByNeighbors(i,j);
+    else
+        contagion = 0;
+
+    if( (contagion==1) && (person[i][j]->getTbExposures()<=2) ){
+		
+        checkTbActivation(i,j);
+
+        if( person[i][j]->getTbState() == LSTB ){
+            person[i][j]->changeTbState(LSTBEXOGENOUS, NA);
+        }
+        else if( person[i][j]->getTbState() == LSTBEXOGENOUS ){   
+            person[i][j]->setTbSwap(LSTBEXOGENOUS);          
+        }
+        
+    }
+    else{
+        if( person[i][j]->getTbState() == LSTB )
+            person[i][j]->setTbSwap( LSTB );
+        else if( person[i][j]->getTbState() == LSTBEXOGENOUS )
+            person[i][j]->setTbSwap( LSTBEXOGENOUS );
+    }
+
+    contagion = 0;
+
+}
+
 #include "../lib/sortPersonsAtributesFromDistributions.cpp"
 #include "../lib/lattice.cpp"
 #include "../lib/printingOnScreen.cpp"
@@ -58,153 +143,12 @@ int Person::dailyDeathsByCoinfection = 0;
 int Person::availableBeds = 0;
 int Person::availableBedsICU = 0;
 
-int PersonTb::total_S  = 0;
-int PersonTb::total_LS = 0;
-int PersonTb::total_TS = 0;
+int Person::total_TBS  = 0;
+int Person::total_TBLS = 0;
+int Person::total_TBLSEXOGENOUS = 0;
+int Person::total_TBTS = 0;
 
-/*
-void CheckActivationfuncTB(int i, int j, int Turn)
-{
-  // Turn=1 for first activation, 2 for second activation
 
-int type;
-
-  int mute;
-
-  if(Turn==1) // first activation
-    {
-      aleat();
-      if(rn <= MaxActivation)
-	{
-	  Person[i][j].FirstActivation = Sactive;
-	  
-	  aleat();
-	  Person[i][j].ActiveTBDay = rn*(Person[i][j].AgeDeathDays - Person[i][j].AgeOfLatencyDaysTB - FastProgression - 1) + Person[i][j].AgeOfLatencyDaysTB + FastProgression;
-	   
-	  //if(WhichType==Sactive)
-	    Person[i][j].InfectionWithS++;
-	  //else if(WhichType==Ractive)
-	    //InfectionWithR[i][j]++;
-	  //else if(WhichType==XDRactive)
-	    //InfectionWithXDR[i][j]++;
-	}
-      else
-	{
-	  Person[i][j].FirstActivation = 0;
-
-	 // if(WhichType==Sactive)
-	    Person[i][j].InfectionWithS++;
-	 // else if(WhichType==Ractive)
-	   // InfectionWithR[i][j]++;
-	  //else if(WhichType==XDRactive)
-	    //InfectionWithXDR[i][j]++;
-	}
-    }
-  else if(Turn==2) // second activation - refinfection
-    {
-      if(type==Sactive && Person[i][j].FirstActivation==0)// re-infection with the same strain
-	{
-	  aleat();
-	  if(rn <= MaxActivation)
-	    {
-	      Person[i][j].SecondActivation = Sactive;
-	   
-	      aleat();
-	      Person[i][j].ActiveTBDay = rn*(Person[i][j].AgeDeathDays - Person[i][j].AgeOfLatencyDaysTB - FastProgression - 1) + Person[i][j].AgeOfLatencyDaysTB + FastProgression;
-		
-	    //  if(WhichType==Sactive)
-		Person[i][j].InfectionWithS++;
-	      //else if(WhichType==Ractive)
-		//InfectionWithR[i][j]++;
-	      //else if(WhichType==XDRactive)
-		//InfectionWithXDR[i][j]++;     
-	    }
-	  else
-	    {
-	      Person[i][j].SecondActivation = 0;
-
-	     //if(WhichType==Sactive)
-	       Person[i][j].InfectionWithS++;
-	     //else if(WhichType==Ractive)
-	       //InfectionWithR[i][j]++;
-	     //else if(WhichType==XDRactive)
-	       //InfectionWithXDR[i][j]++;
-	    }
-	}
-      else if(type==Sactive && Person[i][j].FirstActivation!=0)// re-infection with the same strain
-	{
-	      Person[i][j].SecondActivation = Person[i][j].FirstActivation;
-	     
-	      aleat();
-	      Person[i][j].ActiveTBDay = rn*(Person[i][j].AgeDeathDays - Person[i][j].AgeOfLatencyDaysTB - FastProgression2 - 1) + Person[i][j].AgeOfLatencyDaysTB + FastProgression2;
-		
-	      //if(WhichType==Sactive)
-		Person[i][j].InfectionWithS++;
-	      //else if(WhichType==Ractive)
-		//InfectionWithR[i][j]++;
-	      //else if(WhichType==XDRactive)
-		//InfectionWithXDR[i][j]++;
-	}
-      else if(type==Sactive && Person[i][j].FirstActivation==0)
-	{
-	  aleat();
-	  if(rn <= MaxActivation)
-	    {
-	      Person[i][j].SecondActivation = Sactive;
-	      
-	      aleat();
-	      Person[i][j].ActiveTBDay = rn*(Person[i][j].AgeDeathDays - Person[i][j].AgeOfLatencyDaysTB - FastProgression - 1) + Person[i][j].AgeOfLatencyDaysTB + FastProgression;
-	
-	    //  if(WhichType==Sactive)
-		Person[i][j].InfectionWithS++;
-	      //else if(WhichType==Ractive)
-		//InfectionWithR[i][j]++;
-	      //else if(WhichType==XDRactive)
-		//InfectionWithXDR[i][j]++;
-	    }
-	  else
-	    {
-	    Person[i][j].SecondActivation = 0;
-	   
-	    //if(WhichType==Sactive)
-	      Person[i][j].InfectionWithS++;
-	    //else if(WhichType==Ractive)
-	      //InfectionWithR[i][j]++;
-	    //else if(WhichType==XDRactive)
-	      //InfectionWithXDR[i][j]++; 
-	    }
-	}
-      else if(type==Sactive && Person[i][j].FirstActivation!=0)// re-infection with the same strain
-	{
-	  //if(WhichType==Sactive)
-	    Person[i][j].InfectionWithS++;
-	  //else if(WhichType==Ractive)
-	    //InfectionWithR[i][j]++;
-	   //else if(WhichType==XDRactive)
-	   // InfectionWithXDR[i][j]++;
-	  
-	  aleat();
-	  if(rn <= MaxActivation)
-	    {
-	      
-	      aleat();
-	      mute =  Person[i][j].ActiveTBDay = rn*(Person[i][j].AgeDeathDays - Person[i][j].AgeOfLatencyDaysTB - FastProgression - 1) + Person[i][j].AgeOfLatencyDaysTB + FastProgression;
-
-	      if(mute <= Person[i][j].ActiveTBDay)
-		{
-		  Person[i][j].ActiveTBDay = mute;
-		  Person[i][j].SecondActivation = Sactive;
-		  //CoinfectionActivation[i][j] = WhichType;
-		}
-	    }
-	  else
-	    Person[i][j].SecondActivation = 0;
-	}	
-    }
-}	
-    
-      // end of function
-*/
 
 int main(int argc, char *argv[]){
     
@@ -252,12 +196,11 @@ int main(int argc, char *argv[]){
     beginAgeDistribution();
     beginNaturalDeathDistribution();
     beginLattice( numberOfHospitalBeds*(1 - AverageOcupationRateBeds) , numberOfICUBeds*(1 - AverageOcupationRateBedsICU) );
-    //beginLatticeInfection();
     beginLatticeInfectionTb();
     updateLattice();
 
     printSettings();
-    printOnScreen(0);
+    //printOnScreen(0);
 
     if( of.is_open() ){
         printCountOnFile(TRUE);
@@ -269,51 +212,83 @@ int main(int argc, char *argv[]){
 
     ////////////////////////// TB SPREADS IN POPULATION ///////////////////////////////////////
 
-    for(int time=1; time <= TbSpreadingDays; time++){
+    for(int time=1; time<=TbSpreadingDays; time++){
 
         for(int i = 1; i <= L; i++){ //RUNNING TRHOUGH LATTICE IN GIVEN TIME
             for(int j = 1; j <= L; j++){
             
                 if( person[i][j]->getAge() >= person[i][j]->getAgeOfDeath() ){
-                    
-                    tmp1 = sortPersonAgeOfDeath(); //TRANSFORMAR EM UMA FUNÇÃO APENAS
-                
-                    person[i][j]->death( NATURALCAUSES, sortPersonAge(), tmp1, sortPersonGender(), sortPopPorcentageInIsolation() );
-                    personTb[i][j]->death( tmp1 );
+                    person[i][j]->death( NATURALCAUSES, sortPersonAge(), sortPersonAgeOfDeath(), sortPersonGender(), sortPopPorcentageInIsolation() );
                 }
                 else{
-                    switch( personTb[i][j]->getState() ){
+                    switch( person[i][j]->getTbState() ){
                         
                         case STB:
-                            if( veryfiesTbInfectionByNeighbors(i,j) == 1 ) //contagion
-                                personTb[i][j]->changeState(LSTB, 0, FALSE);
-                            else
-                                personTb[i][j]->setSwap(STB);
+                            
+                            if( veryfiesTbInfectionByNeighbors(i,j) ){ //contagion
+                                person[i][j]->changeTbState(LSTB, NA);
+                                checkTbActivation(i,j);
+                            }
+                            else{
+                                person[i][j]->setTbSwap(STB);
+                            }
                             break;
 
                         case LSTB:
-                        
-                            if( personTb[i][j]->getDaysOnState() >= personTb[i][j]->getStateTotalDays() ) //moves to TBTS state
-                                personTb[i][j]->changeState(TSTB, -1, NA);
-                            else
-                                personTb[i][j]->setSwap(LSTB);
+                                                    
+                            if( person[i][j]->getTypeOfTbInfection()==firstActivationNone ){
+                                person[i][j]->setTbSwap( LSTB );
+                            }
+                            else if( (person[i][j]->getTypeOfTbInfection()==firstActivationSactive) && (person[i][j]->getAge()<(person[i][j]->getActiveTbDays()+fastProgression)) ){
+                                
+                                // verifies daily prob of fast progression to active TB
+                                if( sortRandomNumber(&R) <= dailyProbOfFastProgr ){ 
+                                    person[i][j]->changeTbState(TSTB, NA);
+                                }
+                                else{
+                                    person[i][j]->setTbSwap( LSTB );
+                                }
+                            }
+                            else if( (person[i][j]->getTypeOfTbInfection()==firstActivationSactive) && (person[i][j]->getAge()>=person[i][j]->getActiveTbDays()) ){
+                                person[i][j]->changeTbState(TSTB, NA);
+                            }
+                            else{
+                                person[i][j]->setTbSwap( LSTB );
+                            }
+                    
+                            break;
+
+                        case LSTBEXOGENOUS:
                             
+                            if( person[i][j]->getTypeOfTbInfection() == secondActivationNone ){
+                                newExposure(i,j);
+                            }
+                            else if( (person[i][j]->getTypeOfTbInfection()==secondActivationSactive) && (person[i][j]->getAge()<(person[i][j]->getStateTotalDays()+fastProgression)) ){
+                                    
+                                if( sortRandomNumber(&R) < dailyProbOfFastProgr2 ){ // fast progression to active TB
+                                    person[i][j]->changeTbState(TSTB, NA);
+                                }
+                                else{
+                                    newExposure(i,j);
+                                }
+                            }
+                            else if( (person[i][j]->getTypeOfTbInfection()==secondActivationSactive) && (person[i][j]->getAge()>=person[i][j]->getActiveTbDays()) ){
+                                person[i][j]->changeTbState(TSTB, NA);
+                            }
+                            else{
+                                newExposure(i,j);
+                            }
                             break;
 
                         case TSTB:
                             
-                            rn = sortRandomNumber(&R);
-
-                            if( rn <= MuS){
-
-                                tmp1 = sortPersonAgeOfDeath();
-                
-                                person[i][j]->death( TB, sortPersonAge(), tmp1, sortPersonGender(), sortPopPorcentageInIsolation() );
-                                personTb[i][j]->death( tmp1 );
-
-                            }
+                            probDeath         = MuS;
+                            //probCureTreatment = 1.0;
+                            
+                            if( sortRandomNumber(&R) <= probDeath )
+                                person[i][j]->death( TB, sortPersonAge(), sortPersonAgeOfDeath(), sortPersonGender(), sortPopPorcentageInIsolation() );
                             else
-                                personTb[i][j]->setSwap(TSTB);
+                                person[i][j]->setTbSwap( TSTB );
                             
                             break;
 
@@ -325,9 +300,6 @@ int main(int argc, char *argv[]){
         }
 
         updateLattice();
-
-        if( PRINTONSCREEN==TRUE )
-            printOnScreen(time);
 
         if( PRINTONSCREENTB==TRUE )
             printTbOnScreen(time);
@@ -350,11 +322,7 @@ int main(int argc, char *argv[]){
             for(int j = 1; j <= L; j++){
 
                 if( person[i][j]->getAge() >= person[i][j]->getAgeOfDeath() ){
-                    
-                    tmp1 = sortPersonAgeOfDeath();
-                
-                    person[i][j]->death( NATURALCAUSES, sortPersonAge(), tmp1, sortPersonGender(), sortPopPorcentageInIsolation() );
-                    personTb[i][j]->death( tmp1 );
+                    person[i][j]->death( NATURALCAUSES, sortPersonAge(), sortPersonAgeOfDeath(), sortPersonGender(), sortPopPorcentageInIsolation() );
                 }
                 else{
                     switch( person[i][j]->getState() ){
@@ -381,24 +349,31 @@ int main(int argc, char *argv[]){
                             
                             if( person[i][j]->getDaysOnState() >= person[i][j]->getStateTotalDays() ){ 
                                 
-                                rn = sortRandomNumber(&R);
-                                
-                                if(rn < ProbIPtoIA){ // move to IA state
-                                    person[i][j]->changeState(IA, sortTotalDaysOnState(minIA, maxIA) );
+                                if( person[i][j]->getTbState() == TSTB ){
+                                    person[i][j]->changeState(ISSevere, sortTotalDaysOnState(minISSevere, maxISSevere)); 
                                 }
-                                else{ // move to some type of IS
-                                    
+                                else{
+
                                     rn = sortRandomNumber(&R);
-                                    
-                                    if( rn < ProbToBecomeISLight ){
-                                        person[i][j]->changeState(ISLight, sortTotalDaysOnState(minISLight, maxISLight)); 
+
+                                    if(rn < ProbIPtoIA){ // move to IA state
+                                        person[i][j]->changeState(IA, sortTotalDaysOnState(minIA, maxIA) );
                                     }
-                                    else if( (rn >= ProbToBecomeISLight) && (rn < ProbToBecomeISLight+ProbToBecomeISModerate) ){
-                                        person[i][j]->changeState(ISModerate, sortTotalDaysOnState(minISModerate, maxISModerate)); 
+                                    else{ // move to some type of IS
+                                        
+                                        rn = sortRandomNumber(&R);
+                                        
+                                        if( rn < ProbToBecomeISLight ){
+                                            person[i][j]->changeState(ISLight, sortTotalDaysOnState(minISLight, maxISLight)); 
+                                        }
+                                        else if( (rn >= ProbToBecomeISLight) && (rn < ProbToBecomeISLight+ProbToBecomeISModerate) ){
+                                            person[i][j]->changeState(ISModerate, sortTotalDaysOnState(minISModerate, maxISModerate)); 
+                                        }
+                                        else{
+                                            person[i][j]->changeState(ISSevere, sortTotalDaysOnState(minISSevere, maxISSevere)); 
+                                        }
                                     }
-                                    else{
-                                        person[i][j]->changeState(ISSevere, sortTotalDaysOnState(minISSevere, maxISSevere)); 
-                                    }
+
                                 }
                             }
                             else{
@@ -486,18 +461,26 @@ int main(int argc, char *argv[]){
 
                             if( person[i][j]->getDaysOnState() >= person[i][j]->getStateTotalDays() ){
                                 
-                                rn = sortRandomNumber(&R);
+                                if(person[i][j]->getTbState() == TSTB){
+                                    probRecoveryCovid = 1.0 - 2.21*(1.0 - calcRecoveryProbH(i,j));
+                                    if(probRecoveryCovid < 0.0)
+                                        probRecoveryCovid = 0.0;
+                                }
+                                else{
+                                    probRecoveryCovid = calcRecoveryProbH(i,j);
+                                }
 
-                                if( rn < calcRecoveryProbH(i,j) ){
+                                rn = sortRandomNumber(&R);
+                                
+                                if( rn < probRecoveryCovid ){
                                     person[i][j]->changeState(Recovered, -1); 
                                 }
                                 else if( Person::availableBedsICU > 0){
                                     person[i][j]->changeState(ICU, sortTotalDaysOnState(minICU, maxICU)); 
                                 }
                                 else{
-                                    person[i][j]->death( COVID, sortPersonAge(), sortPersonAgeOfDeath(), sortPersonGender(), sortPopPorcentageInIsolation()); 
+                                    person[i][j]->death( COVID, sortPersonAge(), sortPersonAgeOfDeath(), sortPersonGender(), sortPopPorcentageInIsolation() ); 
                                 }
-                                
                                 
                             }
                             else{
@@ -509,9 +492,18 @@ int main(int argc, char *argv[]){
 
                             if( person[i][j]->getDaysOnState() >= person[i][j]->getStateTotalDays() ){
                                 
+                                if(person[i][j]->getTbState() == TSTB){
+                                    probRecoveryCovid = 1.0 - 2.21*(1.0 - calcRecoveryProbICU(i,j));
+                                    if( probRecoveryCovid < 0.0 )
+                                        probRecoveryCovid = 0.0;
+                                }
+                                else{
+                                    probRecoveryCovid = calcRecoveryProbICU(i,j);
+                                }
+
                                 rn = sortRandomNumber(&R);
 
-                                if( rn < calcRecoveryProbICU(i,j) ){
+                                if( rn < probRecoveryCovid ){
                                     person[i][j]->changeState( Recovered, -1);
                                 }
                                 else{
@@ -534,7 +526,108 @@ int main(int argc, char *argv[]){
                         default:
                             break;
 
-                    }//switch case end
+                    }//covid switch case end
+
+                    switch( person[i][j]->getTbState() ){
+                        
+                        case STB:
+                            if( veryfiesTbInfectionByNeighbors(i,j) ){ //contagion
+                                
+                                person[i][j]->changeTbState(LSTB, NA);
+                                checkTbActivation(i,j);
+                            
+                            }
+                            else{
+                                person[i][j]->setTbSwap(STB);
+                            }
+                            break;
+
+                        case LSTB:
+                        
+                            if( (person[i][j]->getState()==ISSevere) || (person[i][j]->getState()==H) || (person[i][j]->getState()==ICU) ){
+                                
+                                if( person[i][j]->getDaysOnTbState() >= timeForActivateCoinfection ){ //COINFECTION TAKES PLACE
+                                        person[i][j]->changeTbState(TSTB, NA);
+                                }
+                            }
+                            else{ //no covid coinfection
+                            
+                                if( person[i][j]->getTypeOfTbInfection() == firstActivationNone ){
+                                    person[i][j]->setTbSwap( LSTB ); //newExposure(i,j);
+                                }
+                                else if( (person[i][j]->getTypeOfTbInfection()==firstActivationSactive) && (person[i][j]->getAge()<(person[i][j]->getActiveTbDays()+fastProgression)) ){
+
+                                    if( sortRandomNumber(&R) < dailyProbOfFastProgr ){ 
+                                        person[i][j]->changeTbState(TSTB, NA);
+                                    }
+                                    else{
+                                        person[i][j]->setTbSwap( LSTB );
+                                    }
+                                }
+                                else if( (person[i][j]->getTypeOfTbInfection()==firstActivationSactive) && (person[i][j]->getAge()>=person[i][j]->getActiveTbDays()) ){
+                                    person[i][j]->changeTbState(TSTB, NA);
+                                }
+                                else{
+                                    person[i][j]->setTbSwap( LSTB );
+                                }
+                            
+                            }
+                            break;
+
+                        case LSTBEXOGENOUS:
+
+                            if( (person[i][j]->getState() == ISSevere) || (person[i][j]->getState() == H) || (person[i][j]->getState() == ICU) ){
+                                
+                                if( person[i][j]->getDaysOnTbState() >= timeForActivateCoinfection ){ //COINFECTION TAKES PLACE
+                                        person[i][j]->changeTbState(TSTB, NA);
+                                }
+                            }
+                            else{
+                                if( person[i][j]->getTypeOfTbInfection() == secondActivationNone ){
+                                    newExposure(i,j);
+                                }
+                                else if( (person[i][j]->getTypeOfTbInfection()==secondActivationSactive) && (person[i][j]->getAge()<(person[i][j]->getStateTotalDays()+fastProgression)) ){
+                                    
+                                    if( sortRandomNumber(&R) < dailyProbOfFastProgr2 ){ // fast progression to active TB
+                                        person[i][j]->changeTbState(TSTB, NA);
+                                    }
+                                    else{
+                                        newExposure(i,j);
+                                    }
+                                }
+                                else if( (person[i][j]->getTypeOfTbInfection()==secondActivationSactive) && (person[i][j]->getAge()>=person[i][j]->getActiveTbDays()) ){
+                                    person[i][j]->changeTbState(TSTB, NA);
+                                }
+                                else{
+                                    newExposure(i,j);
+                                }
+                            }
+                            break;
+
+                        case TSTB:
+                            if( (person[i][j]->getState() == ISSevere) || (person[i][j]->getState() == H) || (person[i][j]->getState() == ICU) ){
+                                probDeath         = MuS*2.17;
+                                //probCureTreatment = ProbRecoveryCoinfection;
+                            }
+                            else{
+                                probDeath         = MuS;
+                                //probCureTreatment = 1.0;
+                            }
+
+                            if( sortRandomNumber(&R) <= probDeath ){
+                                if((person[i][j]->getState() == ISSevere) || (person[i][j]->getState() == H) || (person[i][j]->getState() == ICU))
+                                    person[i][j]->death( COINFECTION, sortPersonAge(), sortPersonAgeOfDeath(), sortPersonGender(), sortPopPorcentageInIsolation() );
+                                else
+                                    person[i][j]->death( TB, sortPersonAge(), sortPersonAgeOfDeath(), sortPersonGender(), sortPopPorcentageInIsolation() );
+                            }
+                            else
+                                person[i][j]->setTbSwap( TSTB );
+                            
+                            break;
+
+                        default:
+                            break;
+                    } //end of tb switch case
                 }
 
 

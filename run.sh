@@ -11,7 +11,7 @@
 
 simulationName="simulationTest"
 
-numOfSimulations=2
+numOfSimulations=1
 numOfBetaFitSimulations=3
 
 simulationBetaCalculated="TRUE"

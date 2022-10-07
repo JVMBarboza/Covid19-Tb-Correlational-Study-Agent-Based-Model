@@ -4,6 +4,8 @@
 
 #define max 4294967295.0 
 unsigned s = 88912123;
+
+//leting it in this format will prevent the shell script for running and crash while new values automatization
 unsigned 
 R = 89330270
 ;

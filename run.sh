@@ -20,11 +20,11 @@ theoreticalRo=3
 
 printSimulationOnScreen="TRUE"
 printCountOnFile="TRUE"
-printLatticeOnFileAtStart="FALSE"
-printLatticeOnFileAtEnd="FALSE"
+printLatticeOnFileAtStart="TRUE"
+printLatticeOnFileAtEnd="TRUE"
 
 #R
-ran=89329269 
+ran=89329269
 obtainedRO=0
 
 

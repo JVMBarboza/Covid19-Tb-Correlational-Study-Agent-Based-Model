@@ -5,115 +5,18 @@
 
 using namespace std;
 
-ofstream of;
-ofstream lf;
-
+#include "../lib/variables.h"
 #include "../lib/define.h"
 #include "../lib/randomNumberGenerator.cpp"
-
-double maxRandomContacts;
-double minRandomContacts;
-
-double numberOfHospitalBeds;
-double numberOfICUBeds;
-
-//double tmp1, tmp2;
-
-double probDeath;
-double probRecoveryCovid;
-double probCureTreatment;
-
-int contagion = 0;
-
 #include "../lib/person.h"
-//#include "../lib/personTb.h"
 
-Person   *person[L+2][L+2];
-//PersonTb *personTb[L+2][L+2];
+Person *person[L+2][L+2];
 
 #include "../lib/calcAgeDistribution.cpp"
 #include "../lib/calcNaturalDeathDistribution.cpp"
 #include "../lib/calcRecoveryProbabilities.cpp"
 #include "../lib/studyInfectionInNeighborhood.cpp"
-
-void checkTbActivation(int i, int j){
-
-    int type, mute;
-
-    double rn;
-
-    if( person[i][j]->getActivation() == FIRST ){ // first infection
-        
-        rn = sortRandomNumber(&R);
-
-        if(rn <= maxActivation){ //10% will develop activate cases
-            person[i][j]->setTypeOfTbInfection( firstActivationSactive );
-            person[i][j]->setActiveTbDays( sortRandomNumber(&R)*( person[i][j]->getAgeOfDeath() - person[i][j]->getAge() - fastProgression - 1) + person[i][j]->getAge() + fastProgression );
-        }
-        else{ //won't develop activate cases
-            person[i][j]->setTypeOfTbInfection(firstActivationNone);
-            person[i][j]->setActiveTbDays(NA);
-        }
-
-    }
-    else if( person[i][j]->getActivation() == SECOND ){ // second infection
-        
-        if( person[i][j]->getTypeOfTbInfection()==firstActivationNone ){ //no activation in first infection
-            
-            rn = sortRandomNumber(&R);
-
-            if(rn <= maxActivation){ //10% will develop activate cases
-                person[i][j]->setTypeOfTbInfection(secondActivationSactive);
-                person[i][j]->setActiveTbDays( sortRandomNumber(&R)*( person[i][j]->getAgeOfDeath() - person[i][j]->getAge() - fastProgression - 1) + person[i][j]->getAge() + fastProgression );
-            }
-            else{ //won't develop activate cases
-                person[i][j]->setTypeOfTbInfection(secondActivationNone);
-            }
-        }
-        else if( person[i][j]->getTypeOfTbInfection()==firstActivationSactive ){
-            
-            person[i][j]->setTypeOfTbInfection(secondActivationSactive);
-            person[i][j]->setActiveTbDays( sortRandomNumber(&R)*( person[i][j]->getAgeOfDeath() - person[i][j]->getAge() - fastProgression - 1) + person[i][j]->getAge() + fastProgressionIncreased );
-
-        }
-        else{
-            //do nothing, already calculated, just for error handling i wrote this
-        }
-
-    }
-
-}
-
-void newExposure(int i, int j){
-
-    if( (person[i][j]->getTbExposures()<=2) && (person[i][j]->getActivation()==SECOND) )
-        contagion = veryfiesTbInfectionByNeighbors(i,j);
-    else
-        contagion = 0;
-
-    if( (contagion==1) && (person[i][j]->getTbExposures()<=2) ){
-		
-        checkTbActivation(i,j);
-
-        if( person[i][j]->getTbState() == LSTB ){
-            person[i][j]->changeTbState(LSTBEXOGENOUS, NA);
-        }
-        else if( person[i][j]->getTbState() == LSTBEXOGENOUS ){   
-            person[i][j]->setTbSwap(LSTBEXOGENOUS);          
-        }
-        
-    }
-    else{
-        if( person[i][j]->getTbState() == LSTB )
-            person[i][j]->setTbSwap( LSTB );
-        else if( person[i][j]->getTbState() == LSTBEXOGENOUS )
-            person[i][j]->setTbSwap( LSTBEXOGENOUS );
-    }
-
-    contagion = 0;
-
-}
-
+#include "../lib/calcTbAttributes.h"
 #include "../lib/sortPersonsAtributesFromDistributions.cpp"
 #include "../lib/lattice.cpp"
 #include "../lib/printingOnScreen.cpp"
@@ -158,10 +61,12 @@ int main(int argc, char *argv[]){
 
     if(PRINTCOUNTERSONFILE==TRUE){
         of.open("output.csv", ios::out);
+        ofTB.open("outputTB.csv", ios::out);
     }
 
     if(PRINTLATTICEONFILEATSTART==TRUE){
         lf.open("lattice.csv", ios::out);
+        lfTB.open("latticeTb.csv", ios::out);
     }
 
 
@@ -200,18 +105,26 @@ int main(int argc, char *argv[]){
     updateLattice();
 
     printSettings();
-    //printOnScreen(0);
+    printTbOnScreen(0);
 
     if( of.is_open() ){
         printCountOnFile(TRUE);
+    }
+
+    if( ofTB.is_open() ){
+        printTbCountOnFile(TRUE);
     }
 
     if( lf.is_open() ){
         printLatticeOnFile();
     }
 
-    ////////////////////////// TB SPREADS IN POPULATION ///////////////////////////////////////
+    if( lfTB.is_open() ){
+        printTbLatticeOnFile();
+    }
 
+
+    ////////////////////////// TB SPREADS IN POPULATION ///////////////////////////////////////
     for(int time=1; time<=TbSpreadingDays; time++){
 
         for(int i = 1; i <= L; i++){ //RUNNING TRHOUGH LATTICE IN GIVEN TIME
@@ -299,7 +212,8 @@ int main(int argc, char *argv[]){
             }
         }
 
-        updateLattice();
+        if(time != TbSpreadingDays)//se ultimo dia, realiza update na linha 326
+            updateLattice();
 
         if( PRINTONSCREENTB==TRUE )
             printTbOnScreen(time);
@@ -315,8 +229,6 @@ int main(int argc, char *argv[]){
     updateLattice();
     
     for(int time=1; time <= CovidEpidemyDays; time++){
-
-        //INSERT THE SAME TB DYNAMICS
 
         for(int i = 1; i <= L; i++){ //RUNNING TRHOUGH LATTICE IN GIVEN TIME
             for(int j = 1; j <= L; j++){
@@ -606,12 +518,10 @@ int main(int argc, char *argv[]){
 
                         case TSTB:
                             if( (person[i][j]->getState() == ISSevere) || (person[i][j]->getState() == H) || (person[i][j]->getState() == ICU) ){
-                                probDeath         = MuS*2.17;
-                                //probCureTreatment = ProbRecoveryCoinfection;
+                                probDeath = MuS*2.17;
                             }
                             else{
-                                probDeath         = MuS;
-                                //probCureTreatment = 1.0;
+                                probDeath = MuS;
                             }
 
                             if( sortRandomNumber(&R) <= probDeath ){
@@ -643,24 +553,32 @@ int main(int argc, char *argv[]){
             printTbOnScreen(time);
 
         if( of.is_open() )
-            printCountOnFile(FALSE); 
+            printCountOnFile(FALSE);
+            
+        if( ofTB.is_open() )
+            printTbCountOnFile(FALSE);
         
         Person::dailyDeathsByCovid = 0;
         Person::dailyDeathsByTb    = 0;
         Person::dailyDeathsByCoinfection = 0;
 
-    }//for time end    
+    }//for time end
 
 
     ////////////////////////////   CLOSING CREATED FILES ////////////////////////////////////////
     if( of.is_open() )
         of.close();
 
+    if( ofTB.is_open() )
+        ofTB.close();
+
     if( lf.is_open() )
         lf.close();
 
+    if( lfTB.is_open() )
+        lfTB.close();
+
     ////////////////////////////   SIMULATION END   ////////////////////////////////////////
-    
     return 0;
 
 }

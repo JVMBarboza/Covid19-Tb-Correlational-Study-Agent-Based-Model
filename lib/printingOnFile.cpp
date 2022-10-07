@@ -22,18 +22,49 @@ void printCountOnFile(int printHeader){
     
 }
 
+void printTbCountOnFile(int printHeader){
+    
+    if(printHeader==TRUE){
+        ofTB << "S,LS,LSEXOGENOUS,TS,Tb Daily Deaths,Coinfection Daily Deaths" << endl;
+    }
+
+    ofTB << Person::total_TBS << ","
+       << Person::total_TBLS << ","
+       << Person::total_TBLSEXOGENOUS << ","
+       << Person::total_TBTS << ","
+       << Person::dailyDeathsByTb << ","
+       << Person::dailyDeathsByCoinfection << endl;
+    
+}
+
 void printLatticeOnFile(){
 
-    lf << "x-coord,y-coord,State,Age,Gender\n" << endl;
+    lf << "x-coord,y-coord,State\n" << endl;
 
     for(int x = 1; x<=L; x++){
         for(int y = 1; y<=L; y++){
             lf << x << "," 
                << y << "," 
-               << person[x][y]->getState() << "," 
-               << person[x][y]->getAge() << "," 
-               << person[x][y]->getGender() << endl;
+               << person[x][y]->getState() << endl;
         }
     }
+
+    cout << "Covid Lattice recorded!" << endl;
+    
+}
+
+void printTbLatticeOnFile(){
+
+    lfTB << "x-coord,y-coord,State\n" << endl;
+
+    for(int x = 1; x<=L; x++){
+        for(int y = 1; y<=L; y++){
+            lfTB << x << "," 
+               << y << "," 
+               << person[x][y]->getTbState() << endl;
+        }
+    }
+
+    cout << "TB Lattice recorded!" << endl;
     
 }

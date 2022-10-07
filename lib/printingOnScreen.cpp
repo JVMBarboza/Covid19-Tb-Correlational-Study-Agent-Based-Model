@@ -4,49 +4,44 @@
 
 void printOnScreen(int time){
 
-    if(PRINTONSCREEN==TRUE){
-        if(time==0)
-            cout << "\n#################################### Simulation Dynamics Began #####################################################################################\n" << endl;
+    if(time==0)
+        cout << "\n#################################### Simulation Dynamics Began #####################################################################################\n" << endl;
 
-
-        cout << "Time:" << time 
-            << " S:" << Person::total_S 
-            << " E:" << Person::total_E
-            << " IP:" << Person::total_IP
-            << " IA:" << Person::total_IA
-            << " ISL:" << Person::total_ISLight 
-            << " ISM:" << Person::total_ISModerate
-            << " ISS:" << Person::total_ISSevere
-            << " H:" << Person::total_H
-            << " ICU:" << Person::total_ICU
-            << " Recovered:" << Person::total_Recovered 
-            << " Available Bed:" << Person::availableBeds
-            << " Available ICU Beds:" << Person::availableBedsICU
-            << " Natural Deaths:" << Person::total_naturalDeath
-            << " Covid Deaths:" << Person::total_covidDeath
-            << " Daily Deaths:" << Person::dailyDeathsByCovid << endl;
-    }
+    cout << "Time:" << time 
+        << " S:" << Person::total_S 
+        << " E:" << Person::total_E
+        << " IP:" << Person::total_IP
+        << " IA:" << Person::total_IA
+        << " ISL:" << Person::total_ISLight 
+        << " ISM:" << Person::total_ISModerate
+        << " ISS:" << Person::total_ISSevere
+        << " H:" << Person::total_H
+        << " ICU:" << Person::total_ICU
+        << " Recovered:" << Person::total_Recovered 
+        << " Available Bed:" << Person::availableBeds
+        << " Available ICU Beds:" << Person::availableBedsICU
+        << " Natural Deaths:" << Person::total_naturalDeath
+        << " Covid Deaths:" << Person::total_covidDeath
+        << " Daily Deaths:" << Person::dailyDeathsByCovid << endl;
     
    
 }
 
 void printTbOnScreen(int time){
 
-    if(PRINTONSCREEN==TRUE){
-        if(time==0)
-            cout << "\n#################################### Simulation Dynamics Began #####################################################################################\n" << endl;
+    if(time==0)
+        cout << "\n#################################### Simulation Dynamics Began #####################################################################################\n" << endl;
 
 
-        cout << "Time:" << time 
-            << " S:" << Person::total_TBS 
-            << " LS:" << Person::total_TBLS
-            << " LS EXOGENOUS:" << Person::total_TBLSEXOGENOUS
-            << " TS:" << Person::total_TBTS
-            << " Sum: " << Person::total_TBS+Person::total_TBLS+Person::total_TBLSEXOGENOUS+Person::total_TBTS
-            << " Daily Deaths: " << Person::dailyDeathsByTb 
-            << " Sum over TB Deaths: " << Person::total_tbDeath << endl;
-    }
-    
+    cout << "Time:" << time 
+        << " S:" << Person::total_TBS 
+        << " LS:" << Person::total_TBLS
+        << " LS EXOGENOUS:" << Person::total_TBLSEXOGENOUS
+        << " TS:" << Person::total_TBTS
+        << " Sum: " << Person::total_TBS+Person::total_TBLS+Person::total_TBLSEXOGENOUS+Person::total_TBTS
+        << " Daily Deaths: " << Person::dailyDeathsByTb 
+        << " Sum over TB Deaths: " << Person::total_tbDeath << endl;
+
    
 }
 

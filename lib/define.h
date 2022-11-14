@@ -74,16 +74,19 @@
 #define TbSpreadingDays 365*10 // 10 years of TB spread
 #define CovidEpidemyDays 200   // 200 days of covid spread after the 10 years of tb spreading
    
-#define BetaS2dot5 0.098362971295 // OK       /* Infectivity of type S bacteria 1 active generates 2.5 new cases */
+#define BetaS2dot5 0.098362971295 // OK  /* Infectivity of type S bacteria 1 active generates 2.5 new cases */
 #define BetaS2dot0 0.067371898147 // OK
 #define BetaS1dot5 0.045831223229 // OK
+#define BetaOmicron 10*BetaS2dot5
 
-#define BetaTB BetaS2dot5
 
-#define Beta 0.20 //beta covid
+#define BetaTB 0.23
 
-/*****  DEMOGRAPHIC PARAMETERS****/
-#define Density HIGH
+#define Beta BetaS2dot5
+                  // talvez usar beta da omicron?
+
+/*****  DEMOGRAPHIC PARAMETERS  ****/
+#define Density LOW
 
 #define totalWomen 97348809
 #define totalMen 93406990
@@ -206,7 +209,6 @@
 #define firstActivationSactive  1 // infection has taken place
 #define secondActivationNone    2 // No exogenous infection has taken place
 #define secondActivationSactive 3 // Exogenous infection has taken place
-
 
 #define timeForActivateCoinfection 7
 

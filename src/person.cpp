@@ -397,6 +397,7 @@ void Person::update(){
 }
 
 void Person::manageAvailableBeds(int newAvailableBeds, int newAvailableBedsICU){
+    
     availableBeds = availableBeds + newAvailableBeds;
     availableBedsICU = availableBedsICU + newAvailableBedsICU;
 

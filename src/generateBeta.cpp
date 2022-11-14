@@ -95,7 +95,7 @@ int main(int argc, char *argv[]){
     
 
     //////////////////////////  SIMULATION DYNAMICS ////////////////////////////////////////
-    for(int time=1; time <= DAYS && person[xSorted][ySorted]->getState()!=Recovered && person[xSorted][ySorted]->getState()!=S ; time++){
+    for(int time=1; time <= CovidEpidemyDays && person[xSorted][ySorted]->getState()!=Recovered && person[xSorted][ySorted]->getState()!=S ; time++){
 
         for(int i = 1; i <= L; i++){ //RUNNING TRHOUGH LATTICE IN A GIVEN TIME
             for(int j = 1; j <= L; j++){

@@ -101,30 +101,39 @@ int main(int argc, char *argv[]){
     beginAgeDistribution();
     beginNaturalDeathDistribution();
     beginLattice( numberOfHospitalBeds*(1 - AverageOcupationRateBeds) , numberOfICUBeds*(1 - AverageOcupationRateBedsICU) );
-    beginLatticeInfectionTb();
+    //beginLatticeInfectionTb();
     updateLattice();
 
     printSettings();
     printTbOnScreen(0);
 
     if( of.is_open() ){
+        cout << "\nprinting covid count on file...";
         printCountOnFile(TRUE);
+        cout << "DONE" << endl;
     }
 
     if( ofTB.is_open() ){
+        cout << "printing TB count on file...";
         printTbCountOnFile(TRUE);
+        cout << "DONE" << endl;
     }
 
     if( lf.is_open() ){
+        cout << "printing covid lattice on file...";
         printLatticeOnFile();
+        cout << "\n" << endl;
     }
 
     if( lfTB.is_open() ){
+        cout << "printing TB lattice on file...";
         printTbLatticeOnFile();
+        cout << "\n" << endl;
     }
 
 
     ////////////////////////// TB SPREADS IN POPULATION ///////////////////////////////////////
+    if( Person::total_TBS != N){ //i.e. there is infection in lattice, so we have to study a couple of years before insert covid epidemics
     for(int time=1; time<=TbSpreadingDays; time++){
 
         for(int i = 1; i <= L; i++){ //RUNNING TRHOUGH LATTICE IN GIVEN TIME
@@ -196,7 +205,6 @@ int main(int argc, char *argv[]){
                         case TSTB:
                             
                             probDeath         = MuS;
-                            //probCureTreatment = 1.0;
                             
                             if( sortRandomNumber(&R) <= probDeath )
                                 person[i][j]->death( TB, sortPersonAge(), sortPersonAgeOfDeath(), sortPersonGender(), sortPopPorcentageInIsolation() );
@@ -220,6 +228,7 @@ int main(int argc, char *argv[]){
 
         Person::dailyDeathsByTb = 0;
 
+    }
     }
 
 
@@ -440,6 +449,7 @@ int main(int argc, char *argv[]){
 
                     }//covid switch case end
 
+                    if( Person::total_TBS != N){
                     switch( person[i][j]->getTbState() ){
                         
                         case STB:
@@ -538,6 +548,7 @@ int main(int argc, char *argv[]){
                         default:
                             break;
                     } //end of tb switch case
+                    }
                 }
 
 

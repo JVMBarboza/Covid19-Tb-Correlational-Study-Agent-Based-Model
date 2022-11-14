@@ -5,7 +5,8 @@ import glob
 import pandas as pd 
 
 #LOADING DATA FILES 
-filenames = glob.glob("results/simulationTest/*-count*.csv")
+filenames = glob.glob("results/03simulationCovidTB\
+/*-count*.csv")
 
 
 # SETTING FRAMES

@@ -9,19 +9,23 @@
 
 ############################# VARIABLES #####################################
 
-simulationName="simulationTest"
+simulationName="fitBeta"
 
-numOfSimulations=1
-numOfBetaFitSimulations=3
-
-simulationBetaCalculated="TRUE"
-beta=0.23
-theoreticalRo=3
+numOfSimulations=25
+numOfBetaFitSimulations=25
 
 printSimulationOnScreen="TRUE"
 printCountOnFile="TRUE"
-printLatticeOnFileAtStart="TRUE"
-printLatticeOnFileAtEnd="TRUE"
+printLatticeOnFileAtStart="FALSE"
+printLatticeOnFileAtEnd="FALSE"
+
+#AUTOMATIZATION COVID EPIDEMY ON OFF
+#AUTOMATIZATION TB EPIDEMY ON OFF
+#AUTOMATIZATION TO CHANGE POPULATION DENSITY LOW/HIGH
+simulationBetaCalculated="FALSE"
+
+beta=0.23
+theoreticalRo=4.2
 
 #R
 ran=89329269
@@ -31,8 +35,8 @@ obtainedRO=0
 ############################# BETA FUNCTION ######################################
 
 #if simulationBetaCalculated ==  False this step will calculate the optimized beta for your simulations 
-if [ "$simulationBetaCalculated" = "FALSE" ]; 
-then
+if [ "$simulationBetaCalculated" = "FALSE" ]; then
+
     echo "############# FITTING BETA ################"
 
     while [ "$obtainedRO" -ne "$theoreticalRo" ];
@@ -47,7 +51,6 @@ then
             echo "##############  STEP $i/$numOfBetaFitSimulations   ###################" 
             
             make betaCalc
-
             
             ./betaCalc > output.txt      #./betaCalc prints the R number of infected by patient zero
             tail -1 output.txt >> RO.txt # we write R value into RO.txt file

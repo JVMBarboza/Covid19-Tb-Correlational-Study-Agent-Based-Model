@@ -73,7 +73,7 @@ void beginLattice(int tmpAvailableBeds, int tmpAvailableBedsICU){
     for(int i = 0; i <= L+1; i++){
         for(int j = 0; j <= L+1; j++){
 
-            person[i][j]   = new Person( i, j, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            person[i][j]  = new Person( i, j, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 
         }
     }

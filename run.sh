@@ -9,10 +9,10 @@
 
 ############################# VARIABLES #####################################
 
-simulationName="fitBeta"
+simulationName="04simulationCoinfection"
 
-numOfSimulations=25
-numOfBetaFitSimulations=25
+numOfSimulations=5
+numOfBetaFitSimulations=0
 
 printSimulationOnScreen="TRUE"
 printCountOnFile="TRUE"
@@ -22,7 +22,7 @@ printLatticeOnFileAtEnd="FALSE"
 #AUTOMATIZATION COVID EPIDEMY ON OFF
 #AUTOMATIZATION TB EPIDEMY ON OFF
 #AUTOMATIZATION TO CHANGE POPULATION DENSITY LOW/HIGH
-simulationBetaCalculated="FALSE"
+simulationBetaCalculated="TRUE"
 
 beta=0.23
 theoreticalRo=4.2
@@ -106,6 +106,8 @@ do
     ./exec
 
     if [ -e output.csv ]; then  mv output.csv $simulationName-count$i.csv; fi
+    if [ -e outputTB.csv ]; then  mv outputTB.csv $simulationName-TBcount$i.csv; fi
+
     if [ -e lattice.csv ]; then mv lattice.csv $simulationName-lattice$i.csv; fi
 
     make clean
@@ -127,10 +129,10 @@ mv result.csv results/$simulationName/
 
 python3 src/plot.py
 
-mv $simulationName.png results/$simulationName
+mv *.png results/$simulationName
 
 ########################### CLEANING #################################
-rm results/$simulationName/$simulationName-count*.csv *.py 
+rm *.py 
 
 
 echo "#######################################################"

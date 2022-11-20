@@ -74,15 +74,13 @@
 #define TbSpreadingDays 365*10 // 10 years of TB spread
 #define CovidEpidemyDays 200   // 200 days of covid spread after the 10 years of tb spreading
    
-#define BetaS2dot5 0.098362971295 // OK  /* Infectivity of type S bacteria 1 active generates 2.5 new cases */
-#define BetaS2dot0 0.067371898147 // OK
+#define BetaS2dot5 0.098362971295  //ok       /* Infectivity of type S bacteria 1 active generates 2.5 new cases */
+#define BetaS2dot0 0.067371898147 // ok
 #define BetaS1dot5 0.045831223229 // OK
-#define BetaOmicron 10*BetaS2dot5
 
+#define BetaTB BetaS1dot5
 
-#define BetaTB 0.23
-
-#define Beta BetaS2dot5
+#define Beta 0.23
                   // talvez usar beta da omicron?
 
 /*****  DEMOGRAPHIC PARAMETERS  ****/
@@ -188,7 +186,7 @@
 
 /*********** TB DISEASE CONSTANT PARAMETERS **************/
 
-#define MuS 0.00000379 //379e-6           // Probability of TB death for infected with S strain (per day) 
+#define MuS 0.00000379 //3,79e-6           // Probability of TB death for infected with S strain (per day) 
 #define coinfectionFactor 2.17 // Factor that multiplies MuS when coinfection is activated
 
 #define ProbActivationConinfection 0.01

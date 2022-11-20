@@ -101,7 +101,7 @@ int main(int argc, char *argv[]){
     beginAgeDistribution();
     beginNaturalDeathDistribution();
     beginLattice( numberOfHospitalBeds*(1 - AverageOcupationRateBeds) , numberOfICUBeds*(1 - AverageOcupationRateBedsICU) );
-    //beginLatticeInfectionTb();
+    beginLatticeInfectionTb();
     updateLattice();
 
     printSettings();
@@ -225,6 +225,9 @@ int main(int argc, char *argv[]){
 
         if( PRINTONSCREENTB==TRUE )
             printTbOnScreen(time);
+
+        if( ofTB.is_open() )
+            printTbCountOnFile(FALSE);
 
         Person::dailyDeathsByTb = 0;
 
@@ -471,6 +474,7 @@ int main(int argc, char *argv[]){
                                 if( person[i][j]->getDaysOnTbState() >= timeForActivateCoinfection ){ //COINFECTION TAKES PLACE
                                         person[i][j]->changeTbState(TSTB, NA);
                                 }
+
                             }
                             else{ //no covid coinfection
                             
@@ -528,7 +532,7 @@ int main(int argc, char *argv[]){
 
                         case TSTB:
                             if( (person[i][j]->getState() == ISSevere) || (person[i][j]->getState() == H) || (person[i][j]->getState() == ICU) ){
-                                probDeath = MuS*2.17;
+                                probDeath = MuS*coinfectionFactor/1.0;
                             }
                             else{
                                 probDeath = MuS;

@@ -6,10 +6,10 @@ import pandas as pd
 
 
 #LOADING DATA FILES 
-filenames = glob.glob("results/04simulationCoinfection\
+filenames = glob.glob("results/05simulation\
 /*-count*.csv")
 
-filenamesTB = glob.glob("results/04simulationCoinfection\
+filenamesTB = glob.glob("results/05simulation\
 /*-TBcount*.csv")
 
 

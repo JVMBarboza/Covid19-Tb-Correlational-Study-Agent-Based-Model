@@ -9,9 +9,9 @@
 
 ############################# VARIABLES #####################################
 
-simulationName="04simulationCoinfection"
+simulationName="yourSimulationName"
 
-numOfSimulations=5
+numOfSimulations=50
 numOfBetaFitSimulations=0
 
 printSimulationOnScreen="TRUE"
@@ -24,7 +24,7 @@ printLatticeOnFileAtEnd="FALSE"
 #AUTOMATIZATION TO CHANGE POPULATION DENSITY LOW/HIGH
 simulationBetaCalculated="TRUE"
 
-beta=0.23
+beta=0.28
 theoreticalRo=4.2
 
 #R
@@ -90,7 +90,7 @@ echo "####################### PERFORMING SIMULATIONS ###########################
 for i in $(seq 1 "$numOfSimulations");
 do
     root=$((ran+i+1000)) #different R value for generate different pseudo random numbers 
-    cp src/*.py .  #copy codes and edit with different R value
+    #cp src/*.py .  #copy codes and edit with different R value
     
     sed -i -e "s/\(R = \).*/\1$root/" lib/randomNumberGenerator.cpp
     if [ "$printSimulationOnScreen" = "TRUE" ]; then sed -i -e "s/\(#define PRINTONSCREEN \).*/\1"TRUE"/" lib/define.h; fi
@@ -125,14 +125,13 @@ mv $simulationName/ results/
 
 ################## MANIPULATING DATA AND PLOT ########################
 python3 src/fileManipulation.py
-mv result.csv results/$simulationName/
+mv *.csv results/$simulationName/
 
-python3 src/plot.py
-
-mv *.png results/$simulationName
+#python3 src/plot.py
+#mv *.png  results/$simulationName
 
 ########################### CLEANING #################################
-rm *.py 
+
 
 
 echo "#######################################################"

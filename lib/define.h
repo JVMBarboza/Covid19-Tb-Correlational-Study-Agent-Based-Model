@@ -74,14 +74,13 @@
 #define TbSpreadingDays 365*10 // 10 years of TB spread
 #define CovidEpidemyDays 200   // 200 days of covid spread after the 10 years of tb spreading
    
-#define BetaS2dot5 0.098362971295  //ok       /* Infectivity of type S bacteria 1 active generates 2.5 new cases */
+#define BetaS2dot5 0.098362971295 //ok       /* Infectivity of type S bacteria 1 active generates 2.5 new cases */
 #define BetaS2dot0 0.067371898147 // ok
 #define BetaS1dot5 0.045831223229 // OK
 
 #define BetaTB BetaS1dot5
 
-#define Beta 0.23
-                  // talvez usar beta da omicron?
+#define Beta 0.28
 
 /*****  DEMOGRAPHIC PARAMETERS  ****/
 #define Density LOW
@@ -120,7 +119,6 @@
 #define ProbToBecomeISLight 0.6
 #define ProbToBecomeISModerate 0.2
 #define ProbToBecomeISSevere 0.2
-
 #define ProbISLightToISModerate 0.10  // NEW CHECK CHECK
 
 #define ProbHtoICU 0.25
@@ -131,16 +129,16 @@
 #define ProbRecoveryYoungerH 1.0   ///NEW NEW < 20
 #define ProbRecoveryYoungerICU 0.5
 
-/* Probs Recovery IS Moderate for Elerdely */
+/* Probs Recovery IS Moderate for Elderly */
 #define ProbRecovery_60_70_ISModerate 0.21
 #define ProbRecovery_70_80_ISModerate 0.15
 #define ProbRecovery_80_90_ISModerate 0.13
 #define ProbRecoveryGreater90_ISModerate 0.10
 
-/* Probs Recovery IS Severe for Elerdely */
+/* Probs Recovery IS Severe for Elderly */
 #define ProbRecovery_60_70_ISSevere 0.00357
 #define ProbRecovery_70_80_ISSevere 0.00250
-#define ProbRecovery_80_90_ISSevere 0.00125
+#define ProbRecovery_80_90_ISSevere    0.00125
 #define ProbRecoveryGreater90_ISSevere 0.00167
 
 /* Probs Recovery H for age > 20 */
@@ -192,7 +190,7 @@
 #define ProbActivationConinfection 0.01
 #define ProbRecoveryCoinfection 0.75
 
-#define dailyProbOfFastProgr 0.0000703 //7.03e-5    /* daily probability of fast progression */
+#define dailyProbOfFastProgr  0.0000703 //7.03e-5    /* daily probability of fast progression */
 #define dailyProbOfFastProgr2 0.000284 //2.84e-4    /* daily probability of fast progression in case of reinfection*/
 
 #define maxFastProgressionActivation 730        /* between 0 and 730 day may happen fast progression */

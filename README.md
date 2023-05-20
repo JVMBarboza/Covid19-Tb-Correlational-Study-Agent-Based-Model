@@ -1,5 +1,5 @@
 
-# COVID-19 Agent-Based Model 
+# COVID-19 - Tb - Agent-Based Model 
 
 
 <!-- TABLE OF CONTENTS -->
@@ -100,7 +100,7 @@ This is an example of how you may give instructions on setting up your project l
 
 1. Clone the repo
   ```sh
-  git clone https://github.com/JVMBarboza/Agent-Based-Model-Covid19-CPP-implementation
+  git clone https://github.com/JVMBarboza/Covid19-Tb-Correlational-Study-Agent-Based-Model
   ```
 
 2. Run install.sh file (this file verifies, list and install dependencies if permited)
